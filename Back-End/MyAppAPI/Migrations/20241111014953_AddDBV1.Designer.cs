@@ -12,8 +12,8 @@ using WebOnline.Models;
 namespace MyAppAPI.Migrations
 {
     [DbContext(typeof(VioPerfumeDBContext))]
-    [Migration("20241109034600_Model-V1.0")]
-    partial class ModelV10
+    [Migration("20241111014953_AddDBV1")]
+    partial class AddDBV1
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -213,7 +213,7 @@ namespace MyAppAPI.Migrations
                     b.Property<int>("AccessFailedCount")
                         .HasColumnType("int");
 
-                    b.Property<string>("Adress")
+                    b.Property<string>("Address")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 

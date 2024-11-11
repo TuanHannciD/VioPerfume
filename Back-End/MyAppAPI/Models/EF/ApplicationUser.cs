@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace WebOnline.Models.EF
@@ -8,7 +9,8 @@ namespace WebOnline.Models.EF
     public class ApplicationUser : IdentityUser 
     {
         public string FullName { get; set; }
-        public string Adress { get; set; }
+        [Required]
+        public string Address { get; set; }
         public Cart carts { get; set; }
 
         public virtual ICollection<Oders> Oders { get; set; } = new HashSet<Oders>();
