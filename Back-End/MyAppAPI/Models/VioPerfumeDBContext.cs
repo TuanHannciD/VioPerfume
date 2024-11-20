@@ -12,7 +12,7 @@ namespace WebOnline.Models
 
         public DbSet<Ads> adv { get; set; }
         public DbSet<ApplicationUser> user { get; set; }
-        public DbSet<Branch> branches { get; set; }
+        public DbSet<Brand> branches { get; set; }
         public DbSet<Cart> carts { get; set; }
         public DbSet<CartItem> cartItems { get; set; }
         public DbSet<Categorys> categorie { get; set; }

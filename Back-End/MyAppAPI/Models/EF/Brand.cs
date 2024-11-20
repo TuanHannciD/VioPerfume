@@ -4,9 +4,9 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace WebOnline.Models.EF
 {
     [Table("tb.ThuongHieu")]
-    public class Branch : CMAbstract
+    public class Brand : CMAbstract
     {
-        public Branch() 
+        public Brand() 
         {
             this.Products = new HashSet<Products>();
         }
@@ -14,7 +14,7 @@ namespace WebOnline.Models.EF
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
         [Required]
-        public string NameBranch { get; set; }
+        public string NameBrand { get; set; }
         public string Title { get; set; }
         public string Description { get; set; }
 
