@@ -211,7 +211,7 @@ function Dashboard(props) {
                   >
                     <i className="tim-icons icon-settings-gear-63" />
                   </DropdownToggle>
-                  <DropdownMenu aria-labelledby="dropdownMenuLink" right>
+                  <DropdownMenu aria-labelledby="dropdownMenuLink" end>
                     <DropdownItem
                       href="#pablo"
                       onClick={(e) => e.preventDefault()}

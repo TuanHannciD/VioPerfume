@@ -1,21 +1,3 @@
-/*!
-
-=========================================================
-* Black Dashboard React v1.2.2
-=========================================================
-
-* Product Page: https://www.creative-tim.com/product/black-dashboard-react
-* Copyright 2023 Creative Tim (https://www.creative-tim.com)
-* Licensed under MIT (https://github.com/creativetimofficial/black-dashboard-react/blob/master/LICENSE.md)
-
-* Coded by Creative Tim
-
-=========================================================
-
-* The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-
-*/
-/*eslint-disable*/
 import React from "react";
 import { NavLink, Link, useLocation } from "react-router-dom";
 // nodejs library to set properties for components
@@ -28,7 +10,6 @@ import PerfectScrollbar from "perfect-scrollbar";
 import { Nav, NavLink as ReactstrapNavLink } from "reactstrap";
 import {
   BackgroundColorContext,
-  backgroundColors,
 } from "contexts/BackgroundColorContext";
 
 var ps;
@@ -54,9 +35,7 @@ function Sidebar(props) {
       }
     };
   });
-  const linkOnClick = () => {
-    document.documentElement.classList.remove("nav-open");
-  };
+ 
   const { routes, rtlActive, logo } = props;
   let logoImg = null;
   let logoText = null;
@@ -68,6 +47,7 @@ function Sidebar(props) {
           className="simple-text logo-mini"
           target="_blank"
           onClick={props.toggleSidebar}
+          rel="noreferrer"
         >
           <div className="logo-img">
             <img src={logo.imgSrc} alt="react-logo" />
@@ -79,6 +59,7 @@ function Sidebar(props) {
           href={logo.outterLink}
           className="simple-text logo-normal"
           target="_blank"
+          rel="noreferrer"
           onClick={props.toggleSidebar}
         >
           {logo.text}

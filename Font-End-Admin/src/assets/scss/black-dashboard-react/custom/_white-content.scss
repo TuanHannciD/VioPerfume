@@ -1,7 +1,10 @@
 .white-content{
 
   background: $light-bg;
-
+  .modal-content{
+    border: 0;
+    background-color: #ffffff;
+  }
   .navbar.navbar-transparent .navbar-brand{
     color: $black-states;
   }
