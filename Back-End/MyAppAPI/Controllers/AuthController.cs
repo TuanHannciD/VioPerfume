@@ -2,19 +2,28 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using WebOnline.Models.EF;
+using System.IdentityModel.Tokens.Jwt;
+using Microsoft.IdentityModel.Tokens;
+using System.Security.Claims;
+using System.Text;
+using MyAppAPI.DTO;
 
 public class AuthController : ControllerBase
 {
     private readonly ILogger<AuthController> _logger;
     private readonly UserManager<ApplicationUser> _userManager;
     private readonly SignInManager<ApplicationUser> _signInManager;
+    private readonly JwtSettings _jwtSettings;
 
-    public AuthController(ILogger<AuthController> logger, UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager)
+    public AuthController(ILogger<AuthController> logger, UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager, JwtSettings jwt)
     {
         _logger = logger;
         _userManager = userManager;
         _signInManager = signInManager;
+        _jwtSettings = jwt;
     }
+
+    
 
     [HttpPost("login")]
     public async Task<IActionResult> Login([FromBody] LoginDto loginDto)
@@ -39,12 +48,36 @@ public class AuthController : ControllerBase
 
                 _logger.LogInformation("User {Username} logged in successfully with role {Role}.", loginDto.Username, role);
 
-                // Trả về role trong response
-                return Ok(new
+                // Tạo JWT token
+                var claims = new[] 
                 {
-                    message = "Login successful",
-                    role = role
+                new Claim(JwtRegisteredClaimNames.Sub, user.UserName),
+                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+                new Claim(ClaimTypes.Role, role),
+                };
+
+                var secretKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtSettings.SecretKey));
+                var signingCredentials = new SigningCredentials(secretKey, SecurityAlgorithms.HmacSha256);
+
+                var jwtToken = new JwtSecurityToken(
+                    issuer: _jwtSettings.Issuer, // Thay bằng thông tin của bạn
+                    audience: _jwtSettings.Audience, // Thay bằng thông tin của bạn
+                    claims: claims,
+                    expires: DateTime.Now.AddHours(1), // Token hết hạn sau 1 giờ
+                    signingCredentials: signingCredentials
+                );
+
+                var tokenString = new JwtSecurityTokenHandler().WriteToken(jwtToken);
+
+                // Trả về token trong response
+                Response.Cookies.Append("auth_token", tokenString, new CookieOptions
+                {
+                    HttpOnly = true,
+                    Secure = true,
+                    SameSite = SameSiteMode.None,
+                    Expires = DateTime.Now.AddHours(1)
                 });
+                return Ok("Login successful");
             }
             else
             {

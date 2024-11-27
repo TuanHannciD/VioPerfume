@@ -1,18 +1,23 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using MyAppAPI.DTO;
 using System.Threading.Tasks;
+using WebOnline.Models.EF;
 
 [Route("api/[controller]")]
 [ApiController]
 [Authorize(Roles = "Admin")] // Chỉ admin có quyền thêm vai trò
 public class RolesController : ControllerBase
 {
+    private readonly UserManager<ApplicationUser> _userManager;
     private readonly RoleManager<IdentityRole> _roleManager;
 
-    public RolesController(RoleManager<IdentityRole> roleManager)
+    public RolesController(RoleManager<IdentityRole> roleManager , UserManager<ApplicationUser> userManager)
     {
         _roleManager = roleManager;
+        _userManager = userManager;
     }
 
     // API thêm vai trò mới vào cơ sở dữ liệu
@@ -40,6 +45,71 @@ public class RolesController : ControllerBase
         }
 
         // Trả về lỗi nếu có
-        return StatusCode(500, "Failed to add role.");
+        return StatusCode(500, new { Message = "Failed to add role.", Errors = result.Errors });
+
     }
+    [AllowAnonymous]
+    [HttpGet("GetUsersByRole")]
+    public async Task<IActionResult> GetUsersByRole([FromQuery] string[] roles)
+    {
+        if (roles == null || roles.Length == 0)
+        {
+            return BadRequest("Roles parameter is required.");
+        }
+
+        var usersInRoles = new List<object>();
+
+        foreach (var role in roles)
+        {
+            // Kiểm tra role có tồn tại không
+            if (!await _roleManager.RoleExistsAsync(role))
+            {
+                return BadRequest($"Role '{role}' does not exist.");
+            }
+
+            // Lấy danh sách người dùng theo vai trò
+            var users = await _userManager.GetUsersInRoleAsync(role);
+            usersInRoles.AddRange(users.Select(user => new
+            {
+                user.UserName,
+                user.Email,
+                user.FullName,
+                user.PhoneNumber,
+                user.CreatDate, 
+                Roles = new[] { role }
+            }));
+        }
+
+        return Ok(usersInRoles);
+
+        
+    }
+    [HttpPost("UpdateRoleByNumberPhone")]
+    public async Task<IActionResult> UpdateRoleByNumberPhone([FromBody] UpdateUserRoleRequest request)
+    {
+        var existingRole = await _roleManager.RoleExistsAsync(request.ChangeRole);
+        if (!existingRole)
+        {
+            return BadRequest(new { mesage = "The specified role does not exist" });
+        }
+        //Tìm ngdnfg bằng sdt
+        var user = await _userManager.Users.FirstOrDefaultAsync(u => u.PhoneNumber == request.PhoneNumber);
+        if (user == null)
+        {
+            return NotFound(new { message = "User not found" });
+        }
+        var currentRoles = await _userManager.GetRolesAsync(user);// Lấy tất cả các role hiện tại của người dùng
+        var removeResult = await _userManager.RemoveFromRolesAsync(user, currentRoles);    // Xóa tất cả các role hiện tại
+        if (!removeResult.Succeeded)
+        {
+            return BadRequest(new { message = "Failed to remove existing roles" });
+        }
+        var addResult = await _userManager.AddToRoleAsync(user, request.ChangeRole);
+        if (!addResult.Succeeded) 
+        {
+            return BadRequest(new { message = "Failed to assign the new role" });
+        }
+        return Ok(new { message = "User role updated successfully" });
+    }
+
 }

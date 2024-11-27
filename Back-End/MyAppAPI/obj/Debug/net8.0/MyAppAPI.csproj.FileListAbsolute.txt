@@ -146,3 +146,4 @@ D:\TinHoc\DuAn\VioPerfume\Back-End\MyAppAPI\obj\Debug\net8.0\refint\MyAppAPI.dll
 D:\TinHoc\DuAn\VioPerfume\Back-End\MyAppAPI\obj\Debug\net8.0\MyAppAPI.pdb
 D:\TinHoc\DuAn\VioPerfume\Back-End\MyAppAPI\obj\Debug\net8.0\MyAppAPI.genruntimeconfig.cache
 D:\TinHoc\DuAn\VioPerfume\Back-End\MyAppAPI\obj\Debug\net8.0\ref\MyAppAPI.dll
+D:\TinHoc\DuAn\VioPerfume\Back-End\MyAppAPI\bin\Debug\net8.0\Microsoft.AspNetCore.Authentication.JwtBearer.dll

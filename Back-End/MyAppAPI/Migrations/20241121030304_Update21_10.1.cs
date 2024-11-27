@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace MyAppAPI.Migrations
 {
     /// <inheritdoc />
-    public partial class AddDBV1 : Migration
+    public partial class Update21_101 : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -45,7 +45,12 @@ namespace MyAppAPI.Migrations
                     TwoFactorEnabled = table.Column<bool>(type: "bit", nullable: false),
                     LockoutEnd = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: true),
                     LockoutEnabled = table.Column<bool>(type: "bit", nullable: false),
-                    AccessFailedCount = table.Column<int>(type: "int", nullable: false)
+                    AccessFailedCount = table.Column<int>(type: "int", nullable: false),
+                    CreatDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    ModifiedBy = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    ModifiedDate = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: false),
+                    DeletedDate = table.Column<DateTime>(type: "datetime2", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -60,9 +65,11 @@ namespace MyAppAPI.Migrations
                     SettingValue = table.Column<string>(type: "nvarchar(4000)", maxLength: 4000, nullable: false),
                     Description = table.Column<string>(type: "nvarchar(4000)", maxLength: 4000, nullable: false),
                     CreatBy = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    CreatDate = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    CreatDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     ModifiedBy = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    ModifiedDate = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    ModifiedDate = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: false),
+                    DeletedDate = table.Column<DateTime>(type: "datetime2", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -82,9 +89,11 @@ namespace MyAppAPI.Migrations
                     SeoDescription = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     SeoKeyWord = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     CreatBy = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    CreatDate = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    CreatDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     ModifiedBy = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    ModifiedDate = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    ModifiedDate = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: false),
+                    DeletedDate = table.Column<DateTime>(type: "datetime2", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -103,9 +112,11 @@ namespace MyAppAPI.Migrations
                     SeoDescription = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     SeoKeyWord = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     CreatBy = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    CreatDate = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    CreatDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     ModifiedBy = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    ModifiedDate = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    ModifiedDate = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: false),
+                    DeletedDate = table.Column<DateTime>(type: "datetime2", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -139,9 +150,11 @@ namespace MyAppAPI.Migrations
                     Message = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     IsReal = table.Column<bool>(type: "bit", nullable: false),
                     CreatBy = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    CreatDate = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    CreatDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     ModifiedBy = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    ModifiedDate = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    ModifiedDate = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: false),
+                    DeletedDate = table.Column<DateTime>(type: "datetime2", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -159,9 +172,11 @@ namespace MyAppAPI.Migrations
                     Image = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Link = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: false),
                     CreatBy = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    CreatDate = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    CreatDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     ModifiedBy = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    ModifiedDate = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    ModifiedDate = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: false),
+                    DeletedDate = table.Column<DateTime>(type: "datetime2", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -191,13 +206,15 @@ namespace MyAppAPI.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    NameBranch = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    NameBrand = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Title = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     CreatBy = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    CreatDate = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    CreatDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     ModifiedBy = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    ModifiedDate = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    ModifiedDate = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: false),
+                    DeletedDate = table.Column<DateTime>(type: "datetime2", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -348,9 +365,11 @@ namespace MyAppAPI.Migrations
                     SeoKeyWords = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     CategoryssId = table.Column<int>(type: "int", nullable: false),
                     CreatBy = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    CreatDate = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    CreatDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     ModifiedBy = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    ModifiedDate = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    ModifiedDate = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: false),
+                    DeletedDate = table.Column<DateTime>(type: "datetime2", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -379,9 +398,11 @@ namespace MyAppAPI.Migrations
                     SeoKeyWords = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     CategorysId = table.Column<int>(type: "int", nullable: false),
                     CreatBy = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    CreatDate = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    CreatDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     ModifiedBy = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    ModifiedDate = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    ModifiedDate = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: false),
+                    DeletedDate = table.Column<DateTime>(type: "datetime2", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -425,11 +446,12 @@ namespace MyAppAPI.Migrations
                 name: "tb_SanPham",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
+                    Id = table.Column<int>(type: "int", maxLength: 10, nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Title = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: false),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Detail = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Origin = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Capacity = table.Column<int>(type: "int", nullable: false),
                     Image = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Price = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     PriceSale = table.Column<decimal>(type: "decimal(18,2)", nullable: true),
@@ -445,9 +467,11 @@ namespace MyAppAPI.Migrations
                     ProductCategorysId = table.Column<int>(type: "int", nullable: false),
                     BranchId = table.Column<int>(type: "int", nullable: false),
                     CreatBy = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    CreatDate = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    CreatDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     ModifiedBy = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    ModifiedDate = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    ModifiedDate = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: false),
+                    DeletedDate = table.Column<DateTime>(type: "datetime2", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -481,9 +505,11 @@ namespace MyAppAPI.Migrations
                     CartId = table.Column<int>(type: "int", nullable: false),
                     UserId = table.Column<string>(type: "nvarchar(450)", nullable: true),
                     CreatBy = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    CreatDate = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    CreatDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     ModifiedBy = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    ModifiedDate = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    ModifiedDate = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: false),
+                    DeletedDate = table.Column<DateTime>(type: "datetime2", nullable: true)
                 },
                 constraints: table =>
                 {
