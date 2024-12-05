@@ -1,83 +1,115 @@
 ﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using MyAppAPI.DTO;
+using WebOnline.Models;
+using WebOnline.Models.EF;
 
 namespace MyAppAPI.Controllers
 {
-    public class BrandsController : Controller
+    public class BrandsController : ControllerBase
     {
-        // GET: BrandsController
-        public ActionResult Index()
+        private readonly UserManager<ApplicationUser> _userManager;
+        private readonly VioPerfumeDBContext _context;
+        
+        public BrandsController(VioPerfumeDBContext dbContext)
         {
-            return View();
+            _context = dbContext;
+        }
+        [HttpGet("GetAllBranches")]
+        public async Task<IActionResult> GetAllBranches()
+        {
+            var branches = await _context.branches
+                                          .Where(b => !b.IsDeleted)
+                                          .ToListAsync();
+
+            return Ok(branches);
         }
 
-        // GET: BrandsController/Details/5
-        public ActionResult Details(int id)
+        // Lấy một nhánh theo ID (chỉ những nhánh chưa bị xóa)
+        [HttpGet("GetBranchById/{id}")]
+        public async Task<IActionResult> GetBranchById(int id)
         {
-            return View();
-        }
+            var branch = await _context.branches
+                                       .FirstOrDefaultAsync(b => b.Id == id && !b.IsDeleted);
 
-        // GET: BrandsController/Create
-        public ActionResult Create()
-        {
-            return View();
-        }
-
-        // POST: BrandsController/Create
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Create(IFormCollection collection)
-        {
-            try
+            if (branch == null)
             {
-                return RedirectToAction(nameof(Index));
+                return NotFound(new { message = "Branch not found" });
             }
-            catch
-            {
-                return View();
-            }
+
+            return Ok(branch);
         }
 
-        // GET: BrandsController/Edit/5
-        public ActionResult Edit(int id)
+        // Thêm một nhánh mới
+        [HttpPost("AddBranch")]
+        public async Task<IActionResult> AddBranch([FromBody] BranchRequestDto request)
         {
-            return View();
+            if (string.IsNullOrEmpty(request.NameBranch) || string.IsNullOrEmpty(request.Title))
+            {
+                return BadRequest(new { message = "NameBranch and Title are required" });
+            }
+
+            var branch = new Brand
+            {
+                NameBrand = request.NameBranch,
+                Title = request.Title,
+                Description = request.Description,
+                CreatBy = User.Identity?.Name ?? "System",
+                CreatDate = DateTime.Now,
+                IsDeleted = false
+            };
+
+            await _context.branches.AddAsync(branch);
+            await _context.SaveChangesAsync();
+
+            return Ok(new { message = "Branch created successfully", branch });
         }
 
-        // POST: BrandsController/Edit/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, IFormCollection collection)
+        // Cập nhật một nhánh
+        [HttpPut("UpdateBranch/{id}")]
+        public async Task<IActionResult> UpdateBranch(int id, [FromBody] UpdateBranchRequest request)
         {
-            try
+            var branch = await _context.branches.FindAsync(id);
+
+            if (branch == null || branch.IsDeleted)
             {
-                return RedirectToAction(nameof(Index));
+                return NotFound(new { message = "Branch not found" });
             }
-            catch
-            {
-                return View();
-            }
+
+            branch.NameBrand = request.NameBranch ?? branch.NameBrand;
+            branch.Title = request.Title ?? branch.Title;
+            branch.Description = request.Description ?? branch.Description;
+            branch.ModifiedBy = User.Identity?.Name ?? "System";
+            branch.ModifiedDate = DateTime.Now;
+
+            _context.branches.Update(branch);
+            await _context.SaveChangesAsync();
+
+            return Ok(new { message = "Branch updated successfully", branch });
         }
 
-        // GET: BrandsController/Delete/5
-        public ActionResult Delete(int id)
+        // Xóa mềm một nhánh
+        [HttpDelete("DeleteBranch/{id}")]
+        public async Task<IActionResult> DeleteBranch(int id)
         {
-            return View();
+            var branch = await _context.branches.FindAsync(id);
+
+            if (branch == null )
+            {
+                return NotFound(new { message = "Branch not found" });
+            }
+
+            branch.IsDeleted = true;
+            branch.ModifiedBy = User.Identity?.Name ?? "System";
+            branch.ModifiedDate = DateTime.Now;
+
+            _context.branches.Update(branch);
+            await _context.SaveChangesAsync();
+
+            return Ok(new { message = "Branch marked as deleted" });
         }
 
-        // POST: BrandsController/Delete/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Delete(int id, IFormCollection collection)
-        {
-            try
-            {
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
-        }
     }
 }
