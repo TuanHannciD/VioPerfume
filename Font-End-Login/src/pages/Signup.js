@@ -11,24 +11,33 @@ import {
   MDBCardImage,
 } from 'mdb-react-ui-kit';
 import { Link } from 'react-router-dom';
+import { register } from '../api/register';
 
 function SignUp() {
-  const [fullName, setFullName] = useState('');
-  const [username, setUsername] = useState('');
+  const [fullname, setFullName] = useState('');
+  const [userName, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [email, setEmail] = useState('');
-  const [phone, setPhone] = useState('');
-  const [address, setAddress] = useState('');
+  const [numberPhone, setPhone] = useState('');
+  const [adress, setAddress] = useState('');
+  const [errorMessage,setErrorMessage] = useState('');
+  const [isLoading,setIsLoading] = useState('');
 
-  const handleSignUp = (e) => {
+  const handleSignUp = async (e) => {
     e.preventDefault();
     // Xử lý logic đăng ký tại đây
-    console.log('Full Name:', fullName);
-    console.log('Username:', username);
-    console.log('Password:', password);
-    console.log('Email:', email);
-    console.log('Phone:', phone);
-    console.log('Address:', address);
+    setIsLoading(true);
+    setErrorMessage(null);
+    try {
+      await register({fullname,userName,password,email,numberPhone,adress});
+      alert("Register successful !");
+      window.location.href = "/login"
+    } catch (error) {
+      console.error("Register:",error);
+      setErrorMessage("Invalid credentials.")
+    }finally{
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -45,7 +54,7 @@ function SignUp() {
           </MDBCol>
 
           <MDBCol md="6" className="d-flex justify-content-center align-items-center">
-            <MDBCardBody className="d-flex flex-column w-100 p-4">
+            <MDBCardBody className="d-flex flex-column w-100 p-4" onSubmit={(e) => handleSignUp(e)}>
 
               <div className="d-flex flex-row mb-4 justify-content-center">
                 <MDBIcon fas icon="cubes fa-3x me-3" style={{ color: '#ff6219' }} />
@@ -60,7 +69,7 @@ function SignUp() {
                 id="fullnameControlLg"
                 type="text"
                 size="lg"
-                value={fullName}
+                value={fullname}
                 onChange={(e) => setFullName(e.target.value)}
               />
 
@@ -70,7 +79,7 @@ function SignUp() {
                 id="usernameControlLg"
                 type="text"
                 size="lg"
-                value={username}
+                value={userName}
                 onChange={(e) => setUsername(e.target.value)}
               />
 
@@ -100,7 +109,7 @@ function SignUp() {
                 id="phonenumberControlLg"
                 type="text"
                 size="lg"
-                value={phone}
+                value={numberPhone}
                 onChange={(e) => setPhone(e.target.value)}
               />
 
@@ -110,11 +119,15 @@ function SignUp() {
                 id="adressControlLg"
                 type="text"
                 size="lg"
-                value={address}
+                value={adress}
                 onChange={(e) => setAddress(e.target.value)}
               />
+              {errorMessage && (
+                <p className='text-danger text-center'>{errorMessage}</p>
+              )}
 
-              <MDBBtn className="mb-4 px-5" color="dark" size="lg" onClick={handleSignUp}>
+              <MDBBtn className="mb-4 px-5" color="dark" size="lg" onClick={handleSignUp} disabled={isLoading}>
+                {isLoading ? 'Đang đăng kí  ...' : 'Register'}
                 Sign Up
               </MDBBtn>
 
