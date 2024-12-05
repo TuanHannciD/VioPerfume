@@ -140,10 +140,6 @@ public class AuthController : ControllerBase
         public string Adress { get; set; }
 
     }
-    public class Role
-    {
-        public string Name { get; set; }
-     }
 }
 
 

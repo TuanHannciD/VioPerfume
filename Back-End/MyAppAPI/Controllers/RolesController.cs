@@ -8,7 +8,6 @@ using WebOnline.Models.EF;
 
 [Route("api/[controller]")]
 [ApiController]
-[Authorize(Roles = "Admin")] // Chỉ admin có quyền thêm vai trò
 public class RolesController : ControllerBase
 {
     private readonly UserManager<ApplicationUser> _userManager;
@@ -19,6 +18,24 @@ public class RolesController : ControllerBase
         _roleManager = roleManager;
         _userManager = userManager;
     }
+
+    [HttpGet("GetAllRole")]
+    public async Task<IActionResult> GetAllRole()
+    {
+        // Lấy tất cả các roles và trả về 'roleName' và 'roleId'
+        var role = await _roleManager.Roles.Select(r => new
+        {
+            roleId = r.Id,       // Lấy Id của role
+            roleName = r.Name    // Lấy tên của role
+        }).ToListAsync();
+
+        // Trả về danh sách các role
+        return Ok(new
+        {
+            roles = role        // Trả về danh sách các role
+        });
+    }
+
 
     // API thêm vai trò mới vào cơ sở dữ liệu
     [HttpPost("add-role")]
@@ -47,8 +64,7 @@ public class RolesController : ControllerBase
         // Trả về lỗi nếu có
         return StatusCode(500, new { Message = "Failed to add role.", Errors = result.Errors });
 
-    }
-    [AllowAnonymous]
+    }   
     [HttpGet("GetUsersByRole")]
     public async Task<IActionResult> GetUsersByRole([FromQuery] string[] roles)
     {
@@ -71,11 +87,14 @@ public class RolesController : ControllerBase
             var users = await _userManager.GetUsersInRoleAsync(role);
             usersInRoles.AddRange(users.Select(user => new
             {
+                user.Id,
                 user.UserName,
                 user.Email,
                 user.FullName,
                 user.PhoneNumber,
-                user.CreatDate, 
+                CreatDate = user.CreatDate.ToString("dd MMM yyyy, hh:mm tt"),  
+                ModifiedDate = user.ModifiedDate?.ToString("dd MMM yyyy, hh:mm tt"),
+                user.ModifiedBy,
                 Roles = new[] { role }
             }));
         }
@@ -84,6 +103,25 @@ public class RolesController : ControllerBase
 
         
     }
+
+    [HttpGet("GetUserInfoByPhoneNumber/{phoneNumber}")]
+    public async Task<IActionResult> GetUserInfoByPhoneNumber(string phoneNumber)
+    {
+        var user = await _userManager.Users.FirstOrDefaultAsync(u => u.PhoneNumber == phoneNumber);
+        if (user == null)
+        {
+            return NotFound(new { message = "User not found" });
+        }
+
+        var roles = await _userManager.GetRolesAsync(user);
+        return Ok(new
+        {
+            userName = user.UserName,
+            phoneNumber = user.PhoneNumber,
+            role = roles
+        });
+    }
+
     [HttpPost("UpdateRoleByNumberPhone")]
     public async Task<IActionResult> UpdateRoleByNumberPhone([FromBody] UpdateUserRoleRequest request)
     {
@@ -109,7 +147,15 @@ public class RolesController : ControllerBase
         {
             return BadRequest(new { message = "Failed to assign the new role" });
         }
-        return Ok(new { message = "User role updated successfully" });
+        return Ok(new 
+        {
+            message = "User role updated successfully",
+            user = new
+            {
+                userRole = currentRoles,
+                userName = user.UserName,
+            }
+        });
     }
 
 }

@@ -14,8 +14,8 @@ namespace MyAppAPI.Middleware
 
         public async Task InvokeAsync(HttpContext context)
         {
-            // Bỏ qua endpoint /login
-            if (context.Request.Path.StartsWithSegments("/login"))
+            // Bỏ qua endpoint 
+            if (context.Request.Path.StartsWithSegments("/login") || context.Request.Path.StartsWithSegments("/register"))
             {
                 await _requestDelegate(context);
                 return;
