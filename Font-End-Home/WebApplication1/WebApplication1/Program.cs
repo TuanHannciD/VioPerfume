@@ -1,7 +1,14 @@
+using Microsoft.EntityFrameworkCore;
+using WebApplication1.Models;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+
+// Add services to the container.
+builder.Services.AddDbContext<VioPerfumeDBContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("VioPerfumeDB")));
 
 var app = builder.Build();
 
