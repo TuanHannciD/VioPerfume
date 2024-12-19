@@ -1,0 +1,28 @@
+/* Modal fullscreen */
+.custom-modal-fullscreen .modal-dialog {
+    width: 100%; /* Chiếm toàn bộ chiều rộng */
+    height: 100%; /* Chiếm toàn bộ chiều cao */
+    margin: 0; /* Xóa margin mặc định */
+    max-width: 100%; /* Đảm bảo modal không vượt quá màn hình */
+    display: flex;
+    justify-content: center; /* Canh giữa modal */
+    align-items: center; /* Canh giữa theo chiều dọc */
+  }
+  
+  .custom-modal-fullscreen .modal-content {
+    height: 100%; /* Đảm bảo modal content chiếm hết chiều cao */
+    border-radius: 0; /* Không có bo tròn */
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .custom-modal-fullscreen .modal-header,
+  .custom-modal-fullscreen .modal-footer {
+    flex-shrink: 0; /* Đảm bảo header và footer không bị co lại */
+  }
+  
+  .custom-modal-fullscreen .modal-body {
+    flex-grow: 1; /* Đảm bảo body chiếm không gian còn lại */
+    overflow-y: auto; /* Thêm thanh cuộn dọc nếu nội dung quá dài */
+  }
+  

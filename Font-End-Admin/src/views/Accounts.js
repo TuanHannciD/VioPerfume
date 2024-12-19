@@ -213,7 +213,7 @@ const Accounts = ({ isOpen= false, onClose = () =>{} }) => {
         </Col>
       </Row>
 
-      <Modal isOpen={modal} toggle={toggleModal}>
+      <Modal isOpen={modal} toggle={toggleModal} >
         <ModalHeader toggle={toggleModal} close={closeBtn}>
           Phân quyền tài khoản
         </ModalHeader>

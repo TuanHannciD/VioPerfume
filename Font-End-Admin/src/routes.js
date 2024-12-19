@@ -1,10 +1,6 @@
 import Accounts from "views/Accounts";
 import Dashboard from "views/Dashboard.js";
 import Brands from "views/Brands";
-import Icons from "views/Icons.js";
-import Notifications from "views/Notifications.js";
-import Tables from "views/TableList";
-import Typography from "views/Typography.js";
 import UserProfile from "views/UserProfile.js";
 import Oders from "views/Oders";
 

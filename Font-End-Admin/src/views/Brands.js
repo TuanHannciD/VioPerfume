@@ -1,27 +1,49 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 // reactstrap components
 import {
     Card, Table, CardHeader, CardBody, CardTitle, Row, Col,
-    Button, Modal, ModalBody, ModalFooter, ModalHeader, Input,
-    Label, Form, FormGroup, 
+    Button,
 } from "reactstrap";
 import CustomScrollbar from "utils/CustomScrollbar";
-import AddProduct from "./Modals/AddProduct";
+import { AddProduct, ProductsDetailModal, } from "./Modals/AddProduct";
 import AddBrand from "./Modals/AddBrands";
+import { getAllBrands } from "api/Brands";
+import { BrandsDetailModal, ProductCategoryModal } from "./Modals/BranchsModals";
+import { getAllProducts } from "api/apiProducts";
+
 
 
 const Brands = () => {
     const [modelProduct, setModalProduct] = useState(false);
-    const [modelBrand,setModalBrand] = useState(false);
+    const [modelBrand, setModalBrand] = useState(false);
+    const [detailBrandsModal, setDetailBranchs] = useState(null);
+    const [detailProductsModal,setDetailProducts] = useState(null);
+    const [updateProductsModal,setUpdateProducts] = useState(null);
+    const [categoryModal, setCategoryModal] = useState(false);
+
     const toggleModalProduct = () => {
         setModalProduct(!modelProduct);
-    };  
+    };
     const toggleModalBrand = () => {
         setModalBrand(!modelBrand);
     };
+
+    const toggleCategoryModal = () => {
+        setCategoryModal(!categoryModal);
+    };
+
+    const toggleDeltailBranchs = () => {
+        setDetailBranchs(null);
+    };
+    const toggleDetailProducts = () => {
+        setDetailProducts(null);
+    }
+    const toggleUpdateProdcuts = () => {
+        setUpdateProducts(null);
+    }
     const closeBtn = (
         <button className="close" onClick={toggleModalProduct} type="button">
-          &times;
+            &times;
         </button>
     );
     const closeBtnBd = (
@@ -29,6 +51,45 @@ const Brands = () => {
             &times;
         </button>
     );
+    const closeBtnDetailBranchs = (
+        <button className="close" onClick={toggleDeltailBranchs} type="button">
+            &times;
+        </button>
+    );
+    const closeBtndetailProducts = (
+        <button className="close" onClick={toggleDetailProducts} type="button">
+            &times;
+        </button>
+    );
+    const closeBtnProductCategory = (
+        <button className="close" onClick={toggleCategoryModal} type="button">
+            &times;
+        </button>
+    );
+    const closeBtnUpdateProducts = (
+        <button className="close" onClick={toggleUpdateProdcuts} type="button">
+            &times;
+        </button>
+    )
+
+    const [products, setProducts] = useState([]);
+    const [getBranch, setGetBranch] = useState([]);
+
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const [brachData, productsData] = await Promise.all([
+                    getAllBrands(),
+                    getAllProducts()
+                ]);
+                setGetBranch(brachData);
+                setProducts(productsData)
+
+            } catch (error) {
+                console.error("Error fetching data:", error)
+            }
+        }; fetchData();
+    }, [])
 
     return (
 
@@ -43,315 +104,77 @@ const Brands = () => {
                             <div>
                                 <Button color="success" className="animation-on-hover" onClick={toggleModalProduct}>Thêm sản phẩm</Button>
                                 {/* Phần modal addPD */}
-
+                                <Button color="info" className="animation-on-hover float-right" onClick={toggleCategoryModal} >Danh mục sản phẩm</Button>
                                 <AddProduct isOpen={modelProduct} toggle={toggleModalProduct} close={closeBtn}></AddProduct>
                                 <CustomScrollbar>
-                                    <Table>
-
-                                        <thead style={{ position: "sticky", top: 0, zIndex: 1, backdropFilter: 'blur(10px)' }}>
-                                            {/* Thêm backdropFilter để làm mờ nền phía sau mà không cần thêm background */}
+                                    <Table striped>
+                                        <thead>
                                             <tr>
-                                                <th className="text-center">#</th>
-                                                <th>Name</th>
-                                                <th>Job Position</th>
-                                                <th className="text-center">Since</th>
-                                                <th className="text-right">Salary</th>
-                                                <th className="text-right">Actions</th>
+                                                <th>Tên sản phẩm</th>
+                                                <th>Mã sản phẩm</th>
+                                                <th>Người tạo</th>
+                                                <th>Hình ảnh</th>
+                                                <th>Giá</th>
+                                                <th>Nhãn hàng</th>
+                                                <th>Danh mục</th>
+                                                <th>Hành động</th>
                                             </tr>
                                         </thead>
-
-                                        <tbody style={{ top: 100 }}>
-                                            <tr>
-                                                <td className="text-center">3</td>
-                                                <td>Alex Mike</td>
-                                                <td>Designer</td>
-                                                <td className="text-center">2012</td>
-                                                <td className="text-right">€ 99,201</td>
-                                                <td className="text-right">
-                                                    <Button className="btn-icon btn-simple" color="info" size="sm">
-                                                        <i className="fa fa-user"></i>
-                                                    </Button>{` `}
-                                                    <Button className="btn-icon btn-simple" color="success" size="sm">
-                                                        <i className="fa fa-edit"></i>
-                                                    </Button>{` `}
-                                                    <Button className="btn-icon btn-simple" color="danger" size="sm">
-                                                        <i className="fa fa-times" />
-                                                    </Button>{` `}
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td className="text-center">3</td>
-                                                <td>Alex Mike</td>
-                                                <td>Designer</td>
-                                                <td className="text-center">2012</td>
-                                                <td className="text-right">€ 99,201</td>
-                                                <td className="text-right">
-                                                    <Button className="btn-icon btn-simple" color="info" size="sm">
-                                                        <i className="fa fa-user"></i>
-                                                    </Button>{` `}
-                                                    <Button className="btn-icon btn-simple" color="success" size="sm">
-                                                        <i className="fa fa-edit"></i>
-                                                    </Button>{` `}
-                                                    <Button className="btn-icon btn-simple" color="danger" size="sm">
-                                                        <i className="fa fa-times" />
-                                                    </Button>{` `}
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td className="text-center">3</td>
-                                                <td>Alex Mike</td>
-                                                <td>Designer</td>
-                                                <td className="text-center">2012</td>
-                                                <td className="text-right">€ 99,201</td>
-                                                <td className="text-right">
-                                                    <Button className="btn-icon btn-simple" color="info" size="sm">
-                                                        <i className="fa fa-user"></i>
-                                                    </Button>{` `}
-                                                    <Button className="btn-icon btn-simple" color="success" size="sm">
-                                                        <i className="fa fa-edit"></i>
-                                                    </Button>{` `}
-                                                    <Button className="btn-icon btn-simple" color="danger" size="sm">
-                                                        <i className="fa fa-times" />
-                                                    </Button>{` `}
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td className="text-center">3</td>
-                                                <td>Alex Mike</td>
-                                                <td>Designer</td>
-                                                <td className="text-center">2012</td>
-                                                <td className="text-right">€ 99,201</td>
-                                                <td className="text-right">
-                                                    <Button className="btn-icon btn-simple" color="info" size="sm">
-                                                        <i className="fa fa-user"></i>
-                                                    </Button>{` `}
-                                                    <Button className="btn-icon btn-simple" color="success" size="sm">
-                                                        <i className="fa fa-edit"></i>
-                                                    </Button>{` `}
-                                                    <Button className="btn-icon btn-simple" color="danger" size="sm">
-                                                        <i className="fa fa-times" />
-                                                    </Button>{` `}
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td className="text-center">3</td>
-                                                <td>Alex Mike</td>
-                                                <td>Designer</td>
-                                                <td className="text-center">2012</td>
-                                                <td className="text-right">€ 99,201</td>
-                                                <td className="text-right">
-                                                    <Button className="btn-icon btn-simple" color="info" size="sm">
-                                                        <i className="fa fa-user"></i>
-                                                    </Button>{` `}
-                                                    <Button className="btn-icon btn-simple" color="success" size="sm">
-                                                        <i className="fa fa-edit"></i>
-                                                    </Button>{` `}
-                                                    <Button className="btn-icon btn-simple" color="danger" size="sm">
-                                                        <i className="fa fa-times" />
-                                                    </Button>{` `}
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td className="text-center">3</td>
-                                                <td>Alex Mike</td>
-                                                <td>Designer</td>
-                                                <td className="text-center">2012</td>
-                                                <td className="text-right">€ 99,201</td>
-                                                <td className="text-right">
-                                                    <Button className="btn-icon btn-simple" color="info" size="sm">
-                                                        <i className="fa fa-user"></i>
-                                                    </Button>{` `}
-                                                    <Button className="btn-icon btn-simple" color="success" size="sm">
-                                                        <i className="fa fa-edit"></i>
-                                                    </Button>{` `}
-                                                    <Button className="btn-icon btn-simple" color="danger" size="sm">
-                                                        <i className="fa fa-times" />
-                                                    </Button>{` `}
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td className="text-center">3</td>
-                                                <td>Alex Mike</td>
-                                                <td>Designer</td>
-                                                <td className="text-center">2012</td>
-                                                <td className="text-right">€ 99,201</td>
-                                                <td className="text-right">
-                                                    <Button className="btn-icon btn-simple" color="info" size="sm">
-                                                        <i className="fa fa-user"></i>
-                                                    </Button>{` `}
-                                                    <Button className="btn-icon btn-simple" color="success" size="sm">
-                                                        <i className="fa fa-edit"></i>
-                                                    </Button>{` `}
-                                                    <Button className="btn-icon btn-simple" color="danger" size="sm">
-                                                        <i className="fa fa-times" />
-                                                    </Button>{` `}
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td className="text-center">3</td>
-                                                <td>Alex Mike</td>
-                                                <td>Designer</td>
-                                                <td className="text-center">2012</td>
-                                                <td className="text-right">€ 99,201</td>
-                                                <td className="text-right">
-                                                    <Button className="btn-icon btn-simple" color="info" size="sm">
-                                                        <i className="fa fa-user"></i>
-                                                    </Button>{` `}
-                                                    <Button className="btn-icon btn-simple" color="success" size="sm">
-                                                        <i className="fa fa-edit"></i>
-                                                    </Button>{` `}
-                                                    <Button className="btn-icon btn-simple" color="danger" size="sm">
-                                                        <i className="fa fa-times" />
-                                                    </Button>{` `}
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td className="text-center">3</td>
-                                                <td>Alex Mike</td>
-                                                <td>Designer</td>
-                                                <td className="text-center">2012</td>
-                                                <td className="text-right">€ 99,201</td>
-                                                <td className="text-right">
-                                                    <Button className="btn-icon btn-simple" color="info" size="sm">
-                                                        <i className="fa fa-user"></i>
-                                                    </Button>{` `}
-                                                    <Button className="btn-icon btn-simple" color="success" size="sm">
-                                                        <i className="fa fa-edit"></i>
-                                                    </Button>{` `}
-                                                    <Button className="btn-icon btn-simple" color="danger" size="sm">
-                                                        <i className="fa fa-times" />
-                                                    </Button>{` `}
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td className="text-center">3</td>
-                                                <td>Alex Mike</td>
-                                                <td>Designer</td>
-                                                <td className="text-center">2012</td>
-                                                <td className="text-right">€ 99,201</td>
-                                                <td className="text-right">
-                                                    <Button className="btn-icon btn-simple" color="info" size="sm">
-                                                        <i className="fa fa-user"></i>
-                                                    </Button>{` `}
-                                                    <Button className="btn-icon btn-simple" color="success" size="sm">
-                                                        <i className="fa fa-edit"></i>
-                                                    </Button>{` `}
-                                                    <Button className="btn-icon btn-simple" color="danger" size="sm">
-                                                        <i className="fa fa-times" />
-                                                    </Button>{` `}
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td className="text-center">3</td>
-                                                <td>Alex Mike</td>
-                                                <td>Designer</td>
-                                                <td className="text-center">2012</td>
-                                                <td className="text-right">€ 99,201</td>
-                                                <td className="text-right">
-                                                    <Button className="btn-icon btn-simple" color="info" size="sm">
-                                                        <i className="fa fa-user"></i>
-                                                    </Button>{` `}
-                                                    <Button className="btn-icon btn-simple" color="success" size="sm">
-                                                        <i className="fa fa-edit"></i>
-                                                    </Button>{` `}
-                                                    <Button className="btn-icon btn-simple" color="danger" size="sm">
-                                                        <i className="fa fa-times" />
-                                                    </Button>{` `}
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td className="text-center">3</td>
-                                                <td>Alex Mike</td>
-                                                <td>Designer</td>
-                                                <td className="text-center">2012</td>
-                                                <td className="text-right">€ 99,201</td>
-                                                <td className="text-right">
-                                                    <Button className="btn-icon btn-simple" color="info" size="sm">
-                                                        <i className="fa fa-user"></i>
-                                                    </Button>{` `}
-                                                    <Button className="btn-icon btn-simple" color="success" size="sm">
-                                                        <i className="fa fa-edit"></i>
-                                                    </Button>{` `}
-                                                    <Button className="btn-icon btn-simple" color="danger" size="sm">
-                                                        <i className="fa fa-times" />
-                                                    </Button>{` `}
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td className="text-center">3</td>
-                                                <td>Alex Mike</td>
-                                                <td>Designer</td>
-                                                <td className="text-center">2012</td>
-                                                <td className="text-right">€ 99,201</td>
-                                                <td className="text-right">
-                                                    <Button className="btn-icon btn-simple" color="info" size="sm">
-                                                        <i className="fa fa-user"></i>
-                                                    </Button>{` `}
-                                                    <Button className="btn-icon btn-simple" color="success" size="sm">
-                                                        <i className="fa fa-edit"></i>
-                                                    </Button>{` `}
-                                                    <Button className="btn-icon btn-simple" color="danger" size="sm">
-                                                        <i className="fa fa-times" />
-                                                    </Button>{` `}
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td className="text-center">3</td>
-                                                <td>Alex Mike</td>
-                                                <td>Designer</td>
-                                                <td className="text-center">2012</td>
-                                                <td className="text-right">€ 99,201</td>
-                                                <td className="text-right">
-                                                    <Button className="btn-icon btn-simple" color="info" size="sm">
-                                                        <i className="fa fa-user"></i>
-                                                    </Button>{` `}
-                                                    <Button className="btn-icon btn-simple" color="success" size="sm">
-                                                        <i className="fa fa-edit"></i>
-                                                    </Button>{` `}
-                                                    <Button className="btn-icon btn-simple" color="danger" size="sm">
-                                                        <i className="fa fa-times" />
-                                                    </Button>{` `}
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td className="text-center">3</td>
-                                                <td>Alex Mike</td>
-                                                <td>Designer</td>
-                                                <td className="text-center">2012</td>
-                                                <td className="text-right">€ 99,201</td>
-                                                <td className="text-right">
-                                                    <Button className="btn-icon btn-simple" color="info" size="sm">
-                                                        <i className="fa fa-user"></i>
-                                                    </Button>{` `}
-                                                    <Button className="btn-icon btn-simple" color="success" size="sm">
-                                                        <i className="fa fa-edit"></i>
-                                                    </Button>{` `}
-                                                    <Button className="btn-icon btn-simple" color="danger" size="sm">
-                                                        <i className="fa fa-times" />
-                                                    </Button>{` `}
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td className="text-center">3</td>
-                                                <td>Alex Mike</td>
-                                                <td>Designer</td>
-                                                <td className="text-center">2012</td>
-                                                <td className="text-right">€ 99,201</td>
-                                                <td className="text-right">
-                                                    <Button className="btn-icon btn-simple" color="info" size="sm">
-                                                        <i className="fa fa-user"></i>
-                                                    </Button>{` `}
-                                                    <Button className="btn-icon btn-simple" color="success" size="sm">
-                                                        <i className="fa fa-edit"></i>
-                                                    </Button>{` `}
-                                                    <Button className="btn-icon btn-simple" color="danger" size="sm">
-                                                        <i className="fa fa-times" />
-                                                    </Button>{` `}
-                                                </td>
-                                            </tr>
-
+                                        <tbody>
+                                            {!products || products.length === 0 ? (
+                                                <tr>
+                                                    <td colSpan="8" className="text-center">
+                                                        Không có sản phẩm nào
+                                                    </td>
+                                                </tr>
+                                            ) : (
+                                                products.map((product) => (
+                                                    <tr key={product.productsId}>
+                                                        <td>{product.nameProducts}</td>
+                                                        <td>{product.codeProductsPD}</td>
+                                                        <td>{product.creatByPD}</td>
+                                                        <td>
+                                                            {product.imagePD && (
+                                                                <img
+                                                                    src={product.imagePD}
+                                                                    alt={product.nameProducts}
+                                                                    style={{ width: '50px', height: '50px', objectFit: 'cover' }}
+                                                                />
+                                                            )}
+                                                        </td>
+                                                        <td>{new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(product.pricePD)}</td>
+                                                        <td>{product.brandIdPD}</td>
+                                                        <td>{product.productCategorysIdPD}</td>
+                                                        <td>
+                                                            <Button
+                                                                className="btn-icon btn-simple"
+                                                                color="info"
+                                                                size="sm"
+                                                                onClick={() => setDetailProducts(product)}
+                                                            >
+                                                                <i className="fa fa-user"></i>
+                                                            </Button>{" "}
+                                                            <Button
+                                                                className="btn-icon btn-simple"
+                                                                color="success"
+                                                                size="sm"
+                                                                onClick={() => setUpdateProducts(product)}
+                                                            >
+                                                                <i className="fa fa-edit"></i>
+                                                            </Button>{" "}
+                                                            <Button
+                                                                className="btn-icon btn-simple"
+                                                                color="danger"
+                                                                size="sm"
+                                                                // onClick={() => handleDeleteProduct(product.productsId)}
+                                                            >
+                                                                <i className="fa fa-times" />
+                                                            </Button>
+                                                        </td>
+                                                    </tr>
+                                                ))
+                                            )}
                                         </tbody>
-
                                     </Table>
                                 </CustomScrollbar>
                             </div>
@@ -367,312 +190,49 @@ const Brands = () => {
                         <CardBody>
                             <div>
                                 <Button color="success" className="animation-on-hover" onClick={toggleModalBrand}>Thêm nhãn hàng</Button>
-                                <AddBrand isOpen={modelBrand} toggle={setModalBrand} close={closeBtnBd}></AddBrand>
+                                <AddBrand isOpen={modelBrand} toggle={setModalBrand} close={closeBtnBd} />
                                 <CustomScrollbar>
                                     <Table>
 
                                         <thead style={{ position: "sticky", top: 0, zIndex: 1, backdropFilter: 'blur(10px)' }}>
                                             {/* Thêm backdropFilter để làm mờ nền phía sau mà không cần thêm background */}
                                             <tr>
-                                                <th className="text-center">#</th>
+                                                <th className="text-center">ID</th>
                                                 <th>Name</th>
-                                                <th>Job Position</th>
-                                                <th className="text-center">Since</th>
-                                                <th className="text-right">Salary</th>
+                                                <th>Người Thêm</th>
+                                                <th className="text-center">Ngày Thêm</th>
                                                 <th className="text-right">Actions</th>
                                             </tr>
                                         </thead>
 
                                         <tbody style={{ top: 100 }}>
-                                            <tr>
-                                                <td className="text-center">3</td>
-                                                <td>Alex Mike</td>
-                                                <td>Designer</td>
-                                                <td className="text-center">2012</td>
-                                                <td className="text-right">€ 99,201</td>
-                                                <td className="text-right">
-                                                    <Button className="btn-icon btn-simple" color="info" size="sm">
-                                                        <i className="fa fa-user"></i>
-                                                    </Button>{` `}
-                                                    <Button className="btn-icon btn-simple" color="success" size="sm">
-                                                        <i className="fa fa-edit"></i>
-                                                    </Button>{` `}
-                                                    <Button className="btn-icon btn-simple" color="danger" size="sm">
-                                                        <i className="fa fa-times" />
-                                                    </Button>{` `}
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td className="text-center">3</td>
-                                                <td>Alex Mike</td>
-                                                <td>Designer</td>
-                                                <td className="text-center">2012</td>
-                                                <td className="text-right">€ 99,201</td>
-                                                <td className="text-right">
-                                                    <Button className="btn-icon btn-simple" color="info" size="sm">
-                                                        <i className="fa fa-user"></i>
-                                                    </Button>{` `}
-                                                    <Button className="btn-icon btn-simple" color="success" size="sm">
-                                                        <i className="fa fa-edit"></i>
-                                                    </Button>{` `}
-                                                    <Button className="btn-icon btn-simple" color="danger" size="sm">
-                                                        <i className="fa fa-times" />
-                                                    </Button>{` `}
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td className="text-center">3</td>
-                                                <td>Alex Mike</td>
-                                                <td>Designer</td>
-                                                <td className="text-center">2012</td>
-                                                <td className="text-right">€ 99,201</td>
-                                                <td className="text-right">
-                                                    <Button className="btn-icon btn-simple" color="info" size="sm">
-                                                        <i className="fa fa-user"></i>
-                                                    </Button>{` `}
-                                                    <Button className="btn-icon btn-simple" color="success" size="sm">
-                                                        <i className="fa fa-edit"></i>
-                                                    </Button>{` `}
-                                                    <Button className="btn-icon btn-simple" color="danger" size="sm">
-                                                        <i className="fa fa-times" />
-                                                    </Button>{` `}
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td className="text-center">3</td>
-                                                <td>Alex Mike</td>
-                                                <td>Designer</td>
-                                                <td className="text-center">2012</td>
-                                                <td className="text-right">€ 99,201</td>
-                                                <td className="text-right">
-                                                    <Button className="btn-icon btn-simple" color="info" size="sm">
-                                                        <i className="fa fa-user"></i>
-                                                    </Button>{` `}
-                                                    <Button className="btn-icon btn-simple" color="success" size="sm">
-                                                        <i className="fa fa-edit"></i>
-                                                    </Button>{` `}
-                                                    <Button className="btn-icon btn-simple" color="danger" size="sm">
-                                                        <i className="fa fa-times" />
-                                                    </Button>{` `}
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td className="text-center">3</td>
-                                                <td>Alex Mike</td>
-                                                <td>Designer</td>
-                                                <td className="text-center">2012</td>
-                                                <td className="text-right">€ 99,201</td>
-                                                <td className="text-right">
-                                                    <Button className="btn-icon btn-simple" color="info" size="sm">
-                                                        <i className="fa fa-user"></i>
-                                                    </Button>{` `}
-                                                    <Button className="btn-icon btn-simple" color="success" size="sm">
-                                                        <i className="fa fa-edit"></i>
-                                                    </Button>{` `}
-                                                    <Button className="btn-icon btn-simple" color="danger" size="sm">
-                                                        <i className="fa fa-times" />
-                                                    </Button>{` `}
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td className="text-center">3</td>
-                                                <td>Alex Mike</td>
-                                                <td>Designer</td>
-                                                <td className="text-center">2012</td>
-                                                <td className="text-right">€ 99,201</td>
-                                                <td className="text-right">
-                                                    <Button className="btn-icon btn-simple" color="info" size="sm">
-                                                        <i className="fa fa-user"></i>
-                                                    </Button>{` `}
-                                                    <Button className="btn-icon btn-simple" color="success" size="sm">
-                                                        <i className="fa fa-edit"></i>
-                                                    </Button>{` `}
-                                                    <Button className="btn-icon btn-simple" color="danger" size="sm">
-                                                        <i className="fa fa-times" />
-                                                    </Button>{` `}
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td className="text-center">3</td>
-                                                <td>Alex Mike</td>
-                                                <td>Designer</td>
-                                                <td className="text-center">2012</td>
-                                                <td className="text-right">€ 99,201</td>
-                                                <td className="text-right">
-                                                    <Button className="btn-icon btn-simple" color="info" size="sm">
-                                                        <i className="fa fa-user"></i>
-                                                    </Button>{` `}
-                                                    <Button className="btn-icon btn-simple" color="success" size="sm">
-                                                        <i className="fa fa-edit"></i>
-                                                    </Button>{` `}
-                                                    <Button className="btn-icon btn-simple" color="danger" size="sm">
-                                                        <i className="fa fa-times" />
-                                                    </Button>{` `}
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td className="text-center">3</td>
-                                                <td>Alex Mike</td>
-                                                <td>Designer</td>
-                                                <td className="text-center">2012</td>
-                                                <td className="text-right">€ 99,201</td>
-                                                <td className="text-right">
-                                                    <Button className="btn-icon btn-simple" color="info" size="sm">
-                                                        <i className="fa fa-user"></i>
-                                                    </Button>{` `}
-                                                    <Button className="btn-icon btn-simple" color="success" size="sm">
-                                                        <i className="fa fa-edit"></i>
-                                                    </Button>{` `}
-                                                    <Button className="btn-icon btn-simple" color="danger" size="sm">
-                                                        <i className="fa fa-times" />
-                                                    </Button>{` `}
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td className="text-center">3</td>
-                                                <td>Alex Mike</td>
-                                                <td>Designer</td>
-                                                <td className="text-center">2012</td>
-                                                <td className="text-right">€ 99,201</td>
-                                                <td className="text-right">
-                                                    <Button className="btn-icon btn-simple" color="info" size="sm">
-                                                        <i className="fa fa-user"></i>
-                                                    </Button>{` `}
-                                                    <Button className="btn-icon btn-simple" color="success" size="sm">
-                                                        <i className="fa fa-edit"></i>
-                                                    </Button>{` `}
-                                                    <Button className="btn-icon btn-simple" color="danger" size="sm">
-                                                        <i className="fa fa-times" />
-                                                    </Button>{` `}
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td className="text-center">3</td>
-                                                <td>Alex Mike</td>
-                                                <td>Designer</td>
-                                                <td className="text-center">2012</td>
-                                                <td className="text-right">€ 99,201</td>
-                                                <td className="text-right">
-                                                    <Button className="btn-icon btn-simple" color="info" size="sm">
-                                                        <i className="fa fa-user"></i>
-                                                    </Button>{` `}
-                                                    <Button className="btn-icon btn-simple" color="success" size="sm">
-                                                        <i className="fa fa-edit"></i>
-                                                    </Button>{` `}
-                                                    <Button className="btn-icon btn-simple" color="danger" size="sm">
-                                                        <i className="fa fa-times" />
-                                                    </Button>{` `}
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td className="text-center">3</td>
-                                                <td>Alex Mike</td>
-                                                <td>Designer</td>
-                                                <td className="text-center">2012</td>
-                                                <td className="text-right">€ 99,201</td>
-                                                <td className="text-right">
-                                                    <Button className="btn-icon btn-simple" color="info" size="sm">
-                                                        <i className="fa fa-user"></i>
-                                                    </Button>{` `}
-                                                    <Button className="btn-icon btn-simple" color="success" size="sm">
-                                                        <i className="fa fa-edit"></i>
-                                                    </Button>{` `}
-                                                    <Button className="btn-icon btn-simple" color="danger" size="sm">
-                                                        <i className="fa fa-times" />
-                                                    </Button>{` `}
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td className="text-center">3</td>
-                                                <td>Alex Mike</td>
-                                                <td>Designer</td>
-                                                <td className="text-center">2012</td>
-                                                <td className="text-right">€ 99,201</td>
-                                                <td className="text-right">
-                                                    <Button className="btn-icon btn-simple" color="info" size="sm">
-                                                        <i className="fa fa-user"></i>
-                                                    </Button>{` `}
-                                                    <Button className="btn-icon btn-simple" color="success" size="sm">
-                                                        <i className="fa fa-edit"></i>
-                                                    </Button>{` `}
-                                                    <Button className="btn-icon btn-simple" color="danger" size="sm">
-                                                        <i className="fa fa-times" />
-                                                    </Button>{` `}
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td className="text-center">3</td>
-                                                <td>Alex Mike</td>
-                                                <td>Designer</td>
-                                                <td className="text-center">2012</td>
-                                                <td className="text-right">€ 99,201</td>
-                                                <td className="text-right">
-                                                    <Button className="btn-icon btn-simple" color="info" size="sm">
-                                                        <i className="fa fa-user"></i>
-                                                    </Button>{` `}
-                                                    <Button className="btn-icon btn-simple" color="success" size="sm">
-                                                        <i className="fa fa-edit"></i>
-                                                    </Button>{` `}
-                                                    <Button className="btn-icon btn-simple" color="danger" size="sm">
-                                                        <i className="fa fa-times" />
-                                                    </Button>{` `}
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td className="text-center">3</td>
-                                                <td>Alex Mike</td>
-                                                <td>Designer</td>
-                                                <td className="text-center">2012</td>
-                                                <td className="text-right">€ 99,201</td>
-                                                <td className="text-right">
-                                                    <Button className="btn-icon btn-simple" color="info" size="sm">
-                                                        <i className="fa fa-user"></i>
-                                                    </Button>{` `}
-                                                    <Button className="btn-icon btn-simple" color="success" size="sm">
-                                                        <i className="fa fa-edit"></i>
-                                                    </Button>{` `}
-                                                    <Button className="btn-icon btn-simple" color="danger" size="sm">
-                                                        <i className="fa fa-times" />
-                                                    </Button>{` `}
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td className="text-center">3</td>
-                                                <td>Alex Mike</td>
-                                                <td>Designer</td>
-                                                <td className="text-center">2012</td>
-                                                <td className="text-right">€ 99,201</td>
-                                                <td className="text-right">
-                                                    <Button className="btn-icon btn-simple" color="info" size="sm">
-                                                        <i className="fa fa-user"></i>
-                                                    </Button>{` `}
-                                                    <Button className="btn-icon btn-simple" color="success" size="sm">
-                                                        <i className="fa fa-edit"></i>
-                                                    </Button>{` `}
-                                                    <Button className="btn-icon btn-simple" color="danger" size="sm">
-                                                        <i className="fa fa-times" />
-                                                    </Button>{` `}
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td className="text-center">3</td>
-                                                <td>Alex Mike</td>
-                                                <td>Designer</td>
-                                                <td className="text-center">2012</td>
-                                                <td className="text-right">€ 99,201</td>
-                                                <td className="text-right">
-                                                    <Button className="btn-icon btn-simple" color="info" size="sm">
-                                                        <i className="fa fa-user"></i>
-                                                    </Button>{` `}
-                                                    <Button className="btn-icon btn-simple" color="success" size="sm">
-                                                        <i className="fa fa-edit"></i>
-                                                    </Button>{` `}
-                                                    <Button className="btn-icon btn-simple" color="danger" size="sm">
-                                                        <i className="fa fa-times" />
-                                                    </Button>{` `}
-                                                </td>
-                                            </tr>
-
+                                            {!getBranch || getBranch.length === 0 ? (
+                                                <tr>
+                                                    <td colSpan="5" className="text-center">
+                                                        Không có nhãn hàng nào
+                                                    </td>
+                                                </tr>
+                                            ) : (
+                                                getBranch.map((branch) => (
+                                                    <tr key={branch.branchId}>
+                                                        <td>{branch.branchId}</td>
+                                                        <td>{branch.branchName}</td>
+                                                        <td>{branch.creatBy}</td>
+                                                        <td>{branch.creatDate}</td>
+                                                        <td className="text-right">
+                                                            <Button className="btn-icon btn-simple" color="info" size="sm" onClick={() => setDetailBranchs(branch)}>
+                                                                <i className="fa fa-user"></i>
+                                                            </Button>{` `}
+                                                            <Button className="btn-icon btn-simple" color="success" size="sm">
+                                                                <i className="fa fa-edit"></i>
+                                                            </Button>{` `}
+                                                            <Button className="btn-icon btn-simple" color="danger" size="sm">
+                                                                <i className="fa fa-times" />
+                                                            </Button>{` `}
+                                                        </td>
+                                                    </tr>
+                                                ))
+                                            )}
                                         </tbody>
 
                                     </Table>
@@ -683,6 +243,40 @@ const Brands = () => {
                     </Card>
                 </Col>
             </Row>
+            {detailBrandsModal && (
+                <BrandsDetailModal
+                    isOpen={!!detailBrandsModal}
+                    toggle={toggleDeltailBranchs}
+                    close={closeBtnDetailBranchs}
+                    branch={detailBrandsModal}
+
+                />
+            )}
+            {detailProductsModal && (
+                <ProductsDetailModal 
+                    isOpen={!!detailProductsModal}
+                    toggle={toggleDetailProducts}
+                    close={closeBtndetailProducts}
+                    products={detailProductsModal}
+                />
+            )}
+            {updateProductsModal && (
+                <ProductsDetailModal
+                    isOpen={!!updateProductsModal}
+                    toggle={toggleUpdateProdcuts}
+                    close={closeBtnUpdateProducts}
+                    products={updateProductsModal}
+                    openEdit={true}
+                />
+            )}
+            {categoryModal && (
+                <ProductCategoryModal
+                    isOpen={!!categoryModal}
+                    toggle={toggleCategoryModal}
+                    close={closeBtnProductCategory}
+                />
+                    
+            )}
         </div>
 
     );
