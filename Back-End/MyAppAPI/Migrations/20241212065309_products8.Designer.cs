@@ -12,8 +12,8 @@ using WebOnline.Models;
 namespace MyAppAPI.Migrations
 {
     [DbContext(typeof(VioPerfumeDBContext))]
-    [Migration("20241121030304_Update21_10.1")]
-    partial class Update21_101
+    [Migration("20241212065309_products8")]
+    partial class products8
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -319,6 +319,9 @@ namespace MyAppAPI.Migrations
                     b.Property<string>("Description")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsDelete")
+                        .HasColumnType("bit");
 
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
@@ -769,10 +772,6 @@ namespace MyAppAPI.Migrations
                     b.Property<DateTime?>("DeletedDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("Description")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
 
@@ -783,22 +782,23 @@ namespace MyAppAPI.Migrations
                     b.Property<DateTime?>("ModifiedDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("SeoDescription")
+                    b.Property<string>("Name")
                         .IsRequired()
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.Property<string>("SeoDescription")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("SeoKeyWord")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("SeoTitle")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Title")
                         .IsRequired()
-                        .HasMaxLength(256)
-                        .HasColumnType("nvarchar(256)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
@@ -832,16 +832,19 @@ namespace MyAppAPI.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasMaxLength(10)
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("BranchId")
+                    b.Property<int>("BrandId")
                         .HasColumnType("int");
 
                     b.Property<int>("Capacity")
                         .HasColumnType("int");
+
+                    b.Property<string>("CodeProducts")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("CreatBy")
                         .IsRequired()
@@ -854,6 +857,10 @@ namespace MyAppAPI.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("FragranceGroup")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -883,6 +890,11 @@ namespace MyAppAPI.Migrations
                     b.Property<DateTime?>("ModifiedDate")
                         .HasColumnType("datetime2");
 
+                    b.Property<string>("NameProducts")
+                        .IsRequired()
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
                     b.Property<string>("Origin")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -893,35 +905,31 @@ namespace MyAppAPI.Migrations
                     b.Property<decimal?>("PriceSale")
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<int>("ProductCategory")
-                        .HasColumnType("int");
-
                     b.Property<int>("ProductCategorysId")
                         .HasColumnType("int");
 
-                    b.Property<int>("Quantity")
+                    b.Property<int?>("Quantity")
                         .HasColumnType("int");
 
                     b.Property<string>("SeoDescription")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("SeoKeyWords")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("SeoTitle")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Style")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Title")
-                        .IsRequired()
-                        .HasMaxLength(256)
-                        .HasColumnType("nvarchar(256)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("BranchId");
+                    b.HasIndex("BrandId");
 
                     b.HasIndex("ProductCategorysId");
 
@@ -1214,7 +1222,7 @@ namespace MyAppAPI.Migrations
                 {
                     b.HasOne("WebOnline.Models.EF.Brand", "Branch")
                         .WithMany("Products")
-                        .HasForeignKey("BranchId")
+                        .HasForeignKey("BrandId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 

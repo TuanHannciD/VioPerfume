@@ -1,7 +1,9 @@
-﻿using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
+using Microsoft.IdentityModel.JsonWebTokens;
 using MyAppAPI.Models.EF;
+using System.Security.Claims;
 using WebOnline.Models.EF;
 
 namespace WebOnline.Models
@@ -10,101 +12,123 @@ namespace WebOnline.Models
     {
         private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public VioPerfumeDBContext() { }
-        public VioPerfumeDBContext(DbContextOptions<VioPerfumeDBContext> options, IHttpContextAccessor httpContextAccessor) : base(options)
+        public VioPerfumeDBContext(DbContextOptions<VioPerfumeDBContext> options, IHttpContextAccessor httpContextAccessor)
+            : base(options)
         {
             _httpContextAccessor = httpContextAccessor;
         }
 
+        // Hàm để thiết lập thông tin audit
         private void SetAuditFields(object entity, EntityState state)
         {
-            var currentUser = _httpContextAccessor.HttpContext?.User.Identity?.Name ?? "System"; // Giá trị mặc định là "System"
+            // Lấy thông tin người dùng từ HttpContext (nếu có)
+            var currentUser = _httpContextAccessor.HttpContext.User.FindFirst(JwtRegisteredClaimNames.Name)?.Value  ?? "System";
+            var subClaim = _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            // Mặc định là "Swagger"
             var currentDate = DateTime.UtcNow;
 
             if (state == EntityState.Added)
             {
+                // Đối với entity là CMAbstract
                 if (entity is CMAbstract cmAbstractEntity)
                 {
-                    cmAbstractEntity.CreatBy = currentUser;
+                    cmAbstractEntity.CreatBy = currentUser;   // Gán giá trị CreateBy
                     cmAbstractEntity.CreatDate = currentDate;
+                    cmAbstractEntity.ModifiedBy = "Chưa sửa"; // Mặc định "Chưa sửa" khi thêm mới
+                    cmAbstractEntity.ModifiedDate = currentDate;
                 }
+                // Đối với entity là BaseUser
                 else if (entity is BaseUser baseUser)
                 {
                     baseUser.CreatDate = currentDate;
+                    baseUser.ModifiedBy = "Chưa sửa"; // Mặc định "Chưa sửa" khi thêm mới
+                    baseUser.ModifiedDate = currentDate;
                 }
             }
             else if (state == EntityState.Modified)
             {
+                // Đối với entity là CMAbstract
                 if (entity is CMAbstract cmAbstractEntity)
                 {
-                    cmAbstractEntity.ModifiedBy = currentUser;
+                    cmAbstractEntity.ModifiedBy = currentUser;  // Gán giá trị ModifiedBy là username của người dùng
                     cmAbstractEntity.ModifiedDate = currentDate;
+                }
+                // Đối với entity là BaseUser
+                else if (entity is BaseUser baseUser)
+                {
+                    baseUser.ModifiedBy = currentUser ?? "Swagger"; // Gán giá trị ModifiedBy
+                    baseUser.ModifiedDate = currentDate;
+                }
+            }
+            else if (state == EntityState.Deleted)
+            {
+                if (entity is CMAbstract cmAbstractEntity)
+                {
+                    cmAbstractEntity.DeletedDate = currentDate;
                 }
                 else if (entity is BaseUser baseUser)
                 {
-                    baseUser.ModifiedBy = currentUser ?? "System"; // Gán giá trị mặc định nếu currentUser bị null
-                    baseUser.ModifiedDate = currentDate;
+                    baseUser.DeletedDate = currentDate;
                 }
             }
         }
 
 
+        // Override SaveChanges để thiết lập các trường audit trước khi lưu vào DB
         public override int SaveChanges()
         {
             try
             {
                 var entries = ChangeTracker.Entries()
                     .Where(e => (e.Entity is CMAbstract || e.Entity is BaseUser) &&
-                                (e.State == EntityState.Added || e.State == EntityState.Modified));
+                                (e.State == EntityState.Added || e.State == EntityState.Modified || e.State== EntityState.Deleted));
 
+                // Duyệt qua các entity cần xử lý
                 foreach (var entry in entries)
                 {
+                    // Gọi SetAuditFields cho mỗi entity, truyền vào trạng thái (Add/Modified)
                     SetAuditFields(entry.Entity, entry.State);
                 }
 
-                // Lấy thông tin người dùng hiện tại và ghi log
-                var currentUser = _httpContextAccessor.HttpContext?.User.Identity?.Name ?? "System";
-                Console.WriteLine($"Current User: {currentUser}");  // Ghi thông tin người dùng ra Console (hoặc sử dụng logger)
-
+                // Gọi phương thức cơ sở để thực hiện lưu thay đổi vào DB
                 return base.SaveChanges();
             }
             catch (Exception ex)
             {
-                // Ghi lỗi nếu có
                 Console.Error.WriteLine($"Lỗi khi lưu thay đổi: {ex.Message}");
                 throw new Exception("Đã xảy ra lỗi khi lưu thay đổi dữ liệu.", ex);
             }
         }
 
+
+        // Override SaveChangesAsync để hỗ trợ xử lý bất đồng bộ
         public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
         {
-            var currentUserName = "System"; // Giá trị mặc định nếu không có người dùng đăng nhập
-
-            if (_httpContextAccessor.HttpContext?.User?.Identity?.IsAuthenticated ?? false)
+            try
             {
-                currentUserName = _httpContextAccessor.HttpContext.User.Identity.Name ?? "System";
-            }
+                var entries = ChangeTracker.Entries()
+                    .Where(e => (e.Entity is CMAbstract || e.Entity is BaseUser) &&
+                                (e.State == EntityState.Added || e.State == EntityState.Modified  || e.State == EntityState.Deleted));
 
-            foreach (var entry in ChangeTracker.Entries<BaseUser>())
+                // Duyệt qua các entity cần xử lý
+                foreach (var entry in entries)
+                {
+                    // Gọi SetAuditFields cho mỗi entity, truyền vào trạng thái (Add/Modified)
+                    SetAuditFields(entry.Entity, entry.State);
+                }
+
+                // Gọi phương thức cơ sở để thực hiện lưu thay đổi vào DB (bất đồng bộ)
+                return await base.SaveChangesAsync(cancellationToken);
+            }
+            catch (Exception ex)
             {
-                if (entry.State == EntityState.Added)
-                {
-                    
-                    entry.Entity.CreatDate = DateTime.UtcNow;
-                    entry.Entity.ModifiedBy = currentUserName;
-                    entry.Entity.ModifiedDate = DateTime.UtcNow;
-                }
-                else if (entry.State == EntityState.Modified)
-                {
-                    entry.Entity.ModifiedBy = currentUserName;
-                    entry.Entity.ModifiedDate = DateTime.UtcNow;
-                }
+                Console.Error.WriteLine($"Lỗi khi lưu thay đổi: {ex.Message}");
+                throw new Exception("Đã xảy ra lỗi khi lưu thay đổi dữ liệu.", ex);
             }
-
-            return await base.SaveChangesAsync(cancellationToken);
         }
 
 
+        // Các DbSet khác cho các thực thể trong hệ thống
         public DbSet<Ads> adv { get; set; }
         public DbSet<ApplicationUser> user { get; set; }
         public DbSet<Brand> branches { get; set; }
@@ -125,9 +149,10 @@ namespace WebOnline.Models
         public DbSet<ProductVoucher> productVoucher { get; set; }
         public DbSet<UserVoucher> userVoucher { get; set; }
 
+        // Đảm bảo gọi base method trong OnModelCreating
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            base.OnModelCreating(modelBuilder); // Đảm bảo gọi base method 
+            base.OnModelCreating(modelBuilder);
         }
     }
 }

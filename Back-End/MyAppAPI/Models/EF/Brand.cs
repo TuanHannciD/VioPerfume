@@ -17,6 +17,7 @@ namespace WebOnline.Models.EF
         public string NameBrand { get; set; }
         public string Title { get; set; }
         public string Description { get; set; }
+        public bool IsDelete { get; set; }
 
         public ICollection<Products> Products { get; set; }
     }

@@ -263,3 +263,7 @@ D:\TinHoc\DuAn\VioPerfume\Back-End\MyAppAPI\bin\Debug\net8.0\runtimes\win\lib\ne
 D:\TinHoc\DuAn\VioPerfume\Back-End\MyAppAPI\bin\Debug\net8.0\runtimes\win\lib\net7.0\System.Drawing.Common.dll
 D:\TinHoc\DuAn\VioPerfume\Back-End\MyAppAPI\bin\Debug\net8.0\runtimes\win\lib\net7.0\System.Security.Cryptography.ProtectedData.dll
 D:\TinHoc\DuAn\VioPerfume\Back-End\MyAppAPI\bin\Debug\net8.0\runtimes\win\lib\net7.0\System.Windows.Extensions.dll
+D:\TinHoc\DuAn\VioPerfume\Back-End\MyAppAPI\bin\Debug\net8.0\MyAppAPI.staticwebassets.endpoints.json
+D:\TinHoc\DuAn\VioPerfume\Back-End\MyAppAPI\obj\Debug\net8.0\staticwebassets.build.endpoints.json
+D:\TinHoc\DuAn\VioPerfume\Back-End\MyAppAPI\obj\Debug\net8.0\staticwebassets\msbuild.MyAppAPI.Microsoft.AspNetCore.StaticWebAssetEndpoints.props
+D:\TinHoc\DuAn\VioPerfume\Back-End\MyAppAPI\obj\Debug\net8.0\staticwebassets.upToDateCheck.txt

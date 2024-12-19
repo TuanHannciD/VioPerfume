@@ -52,6 +52,7 @@ public class AuthController : ControllerBase
                 var claims = new[] 
                 {
                 new Claim(JwtRegisteredClaimNames.Sub, user.UserName),
+                new Claim(JwtRegisteredClaimNames.Name, user.FullName),
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
                 new Claim(ClaimTypes.Role, role),
                 };
@@ -76,6 +77,7 @@ public class AuthController : ControllerBase
                     Secure = true,
                     SameSite = SameSiteMode.None,
                     Expires = DateTime.Now.AddHours(1)
+                   // Domain = ".domain.com", // Cho phép cookie chia sẻ trên tất cả các subdomain
                 });
                 return Ok("Login successful");
             }

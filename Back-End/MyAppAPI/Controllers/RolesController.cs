@@ -157,5 +157,32 @@ public class RolesController : ControllerBase
             }
         });
     }
+    [HttpDelete("DeleteRoleById")]
+    public async Task<IActionResult> DeleteRoleById([FromQuery] string roleId)
+    {
+        if (string.IsNullOrWhiteSpace(roleId))
+        {
+            return BadRequest("Role ID is required.");
+        }
+
+        // Tìm vai trò theo ID
+        var role = await _roleManager.FindByIdAsync(roleId);
+        if (role == null)
+        {
+            return NotFound($"Role with ID '{roleId}' does not exist.");
+        }
+
+        // Xóa vai trò
+        var result = await _roleManager.DeleteAsync(role);
+        if (result.Succeeded)
+        {
+            return Ok($"Role with ID '{roleId}' has been deleted successfully.");
+        }
+
+        // Xử lý lỗi nếu việc xóa không thành công
+        var errors = string.Join("; ", result.Errors.Select(e => e.Description));
+        return BadRequest($"Failed to delete role with ID '{roleId}'. Errors: {errors}");
+    }
+
 
 }
