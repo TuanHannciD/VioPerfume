@@ -1,15 +1,19 @@
-import { AddBranch, putUpdateBrand ,getBrandsById, delBrand} from 'api/apiBrands';
+import { AddBranch, putUpdateBrand, getBrandsById, delBrand } from 'api/apiBrands';
 import React, { useState, useEffect } from 'react';
-import { Modal, ModalHeader, ModalBody, Button, FormGroup, Label, Input, FormFeedback,ModalFooter } from 'reactstrap';
-import { validateAddBrandForm,validateUpdateBrandForm } from '../../validations/brandValidations';
-import { addBrandFormData,updateFormData, } from '../../constants/brandFormData';
+import {
+    Modal, ModalHeader, ModalBody, Button, FormGroup, Label, Input, FormFeedback, ModalFooter,
+    Card, CardBody, CardText,
+} from 'reactstrap';
+import { validateAddBrandForm, validateUpdateBrandForm } from '../../validations/brandValidations';
+import { addBrandFormData, updateFormData, } from '../../constants/brandFormData';
+import { formatDate } from 'utils/dateFormatter';
 
 export const AddBrand = ({ isOpen, toggle, close }) => {
     const [formData, setFormData] = useState(addBrandFormData);
     const [errors, setErrors] = useState({});
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [successMessage, setSuccessMessage] = useState('');
-    const [isConfirmed, setIsConfirmed] = useState(false); 
+    const [isConfirmed, setIsConfirmed] = useState(false);
 
     // Hàm xử lý khi nhập dữ liệu
     const handleInputChange = (e) => {
@@ -21,10 +25,10 @@ export const AddBrand = ({ isOpen, toggle, close }) => {
     };
 
     const handleCheckboxChange = (e) => {
-        setIsConfirmed(e.target.checked); 
+        setIsConfirmed(e.target.checked);
     };
 
-    
+
 
     // Hàm xử lý khi submit form
     const handleSubmit = async (e) => {
@@ -100,11 +104,11 @@ export const AddBrand = ({ isOpen, toggle, close }) => {
                             value={formData.description}
                             onChange={handleInputChange}
                         />
-                    </FormGroup>                
+                    </FormGroup>
                     <FormGroup check>
                         <Label className="form-check-label">
                             <Input
-                                className="form-check-input" 
+                                className="form-check-input"
                                 type="checkbox"
                                 checked={isConfirmed}
                                 onChange={handleCheckboxChange}
@@ -218,12 +222,29 @@ export const BrandsDetailModal = ({ isOpen, toggle, close, branch, openEdit }) =
                         </Button>
                     </form>
                 ) : (
-                    <div>
-                        <h4>ID: {branchData.id}</h4>
-                        <h4>Tên: {branchData.nameBrand}</h4>
-                        <h4>Thông tin: {branchData.title}</h4>
-                        <h4>Giới thiệu: {branchData.description}</h4>
-                    </div>
+                    <Card className="mb-3 shadow-sm">
+                        <CardBody>
+                            <CardText>
+                                <strong>ID:</strong> <span className="text-info">{branchData.id}</span>
+                            </CardText>
+                            <CardText>
+                                <strong>Tên:</strong> <span className="text-info">{branchData.nameBrand}</span>
+                            </CardText>
+                            <CardText>
+                                <strong>Thông tin:</strong> <span className="text-info">{branchData.title}</span>
+                            </CardText>
+                            <CardText>
+                                <strong>Giới thiệu:</strong> <span className="text-info">{branchData.description}</span>
+                            </CardText>
+                            <CardText>
+                                <strong>Người thêm:</strong> <span className="text-info">{branchData.creatBy}</span>
+                            </CardText>
+                            <CardText>
+                                <strong>Ngày thêm:</strong>{" "}
+                                <span className="text-info">{formatDate(branchData.creatDate)}</span>
+                            </CardText>
+                        </CardBody>
+                    </Card>
                 )}
             </ModalBody>
             <ModalFooter>
@@ -238,52 +259,52 @@ export const BrandsDetailModal = ({ isOpen, toggle, close, branch, openEdit }) =
     );
 };
 
-export const BrandDeleteModal = ({ isOpen, toggle, close, brands,  }) => {
+export const BrandDeleteModal = ({ isOpen, toggle, close, brands, }) => {
     const [loading, setLoading] = useState(false);
-  
+
     // Xử lý khi modal mở và có sản phẩm để xóa
     useEffect(() => {
-      if (brands && brands.branchId) {
-        console.log('Đang mở modal xóa sản phẩm với ID:', brands.branchId);
-      }
+        if (brands && brands.branchId) {
+            console.log('Đang mở modal xóa sản phẩm với ID:', brands.branchId);
+        }
     }, [isOpen, brands]);
-  
+
     const handleDeleteBrand = () => {
-      if (!brands || !brands.branchId) {
-        console.log('Không có ID nhãn hàng hoặc thông tin nhãn hàng');
-        return;
-      }
-  
-      setLoading(true);
-      delBrand(brands.branchId)  // Giả sử delDeleteProduct là hàm xóa sản phẩm (có thể là API call)
-        .then(() => {
-          console.log('Sản phẩm đã bị xóa thành công');
-          toggle(); // Đóng modal sau khi xóa thành công
-        })
-        .catch((error) => {
-          console.error('Lỗi khi xóa sản phẩm:', error);
-        })
-        .finally(() => {
-          setLoading(false);  // Đặt lại trạng thái loading khi kết thúc
-        });
+        if (!brands || !brands.branchId) {
+            console.log('Không có ID nhãn hàng hoặc thông tin nhãn hàng');
+            return;
+        }
+
+        setLoading(true);
+        delBrand(brands.branchId)  // Giả sử delDeleteProduct là hàm xóa sản phẩm (có thể là API call)
+            .then(() => {
+                console.log('Sản phẩm đã bị xóa thành công');
+                toggle(); // Đóng modal sau khi xóa thành công
+            })
+            .catch((error) => {
+                console.error('Lỗi khi xóa sản phẩm:', error);
+            })
+            .finally(() => {
+                setLoading(false);  // Đặt lại trạng thái loading khi kết thúc
+            });
     };
-  
+
     return (
-      <Modal isOpen={isOpen} toggle={toggle}>
-        <ModalHeader toggle={toggle} close={close}>
-            Xóa Nhãn Hàng
-        </ModalHeader>
-        <ModalBody>
-          <p>Bạn có chắc chắn muốn xóa nhãn hàng này không?</p>
-        </ModalBody>
-        <ModalFooter>
-          <Button color="secondary" onClick={toggle}>
-            Đóng
-          </Button>
-          <Button color="primary" onClick={handleDeleteBrand} disabled={loading}>
-            {loading ? 'Đang xóa...' : 'Xóa Nhãn Hàng'}
-          </Button>
-        </ModalFooter>
-      </Modal>
+        <Modal isOpen={isOpen} toggle={toggle}>
+            <ModalHeader toggle={toggle} close={close}>
+                Xóa Nhãn Hàng
+            </ModalHeader>
+            <ModalBody>
+                <p>Bạn có chắc chắn muốn xóa nhãn hàng này không?</p>
+            </ModalBody>
+            <ModalFooter>
+                <Button color="secondary" onClick={toggle}>
+                    Đóng
+                </Button>
+                <Button color="primary" onClick={handleDeleteBrand} disabled={loading}>
+                    {loading ? 'Đang xóa...' : 'Xóa Nhãn Hàng'}
+                </Button>
+            </ModalFooter>
+        </Modal>
     );
-  };
+};
