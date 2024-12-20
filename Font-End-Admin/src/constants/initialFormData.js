@@ -31,5 +31,4 @@ export const addProductFormData = {
     branch: '',
     createBy: '',
     createDate: '',
-    imagePath:'',
   };

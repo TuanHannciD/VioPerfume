@@ -31,7 +31,7 @@ export const validateUpdateProductForm = (originalData, updatedData) => {
   }
 
   if (!updatedData.codeProducts) {
-    errors.codeProducts = 'Mã sản phẩm là bắt buộc.';
+    errors.codeProducts = 'Mã sản phẩm là bắt buộc.'; 
   } else if (updatedData.codeProducts !== originalData.codeProducts) {
     hasChanges = true;
   }
@@ -64,6 +64,14 @@ export const validateUpdateProductForm = (originalData, updatedData) => {
     errors.capacity = 'Dung tích phải lớn hơn 0.';
   } else if (updatedData.capacity !== originalData.capacity) {
     hasChanges = true;
+  }
+
+  if (!updatedData.quantity || updatedData.quantity <= 0) {
+    errors.quantity = 'Số lượng phải lớn hơn 0.'
+  }
+
+  if (!updatedData.capacity || updatedData.capacity <= 50) {
+    errors.capacity = "Dung tích phải lớn hơn 50ml"
   }
 
   return {

@@ -2,32 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { Modal, ModalHeader, ModalBody, ModalFooter, Form, FormGroup, Label, Input, Button, Table } from 'reactstrap';
 import { getAllProductCategorys, AddProductCategorys, updateProductCategory, getByIdProductCategory } from '../../api/apiProductCategorys';
 
-export const BrandsDetailModal = ({ isOpen, toggle, close, branch ,}) => {
-  return (
-    <Modal isOpen={isOpen} toggle={toggle}  fullscreen="true">
-      <ModalHeader toggle={toggle} close = {close} >
-        Chi tiết nhãn hàng
-      </ModalHeader>
-      <ModalBody>
-        {branch ? (
-          <div>
-            <h4>ID: {branch.branchId}</h4>
-            <h4>Tên: {branch.branchName}</h4>
-            <h4>Người thêm: {branch.creatBy}</h4>
-            <h4>Ngày thêm: {branch.creatDate}</h4>
-          </div>
-        ) : (
-          <p>Không có thông tin để hiển thị.</p>
-        )}
-      </ModalBody>
-      <ModalFooter>
-        <Button color="secondary" onClick={toggle}>
-          Đóng
-        </Button>
-      </ModalFooter>
-    </Modal>
-  );
-};
 
 export const ProductCategoryModal = ({ isOpen, toggle, close }) => {
   const [categories, setCategories] = useState([]);

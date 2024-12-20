@@ -5,10 +5,10 @@ import {
     Button,
 } from "reactstrap";
 import CustomScrollbar from "utils/CustomScrollbar";
-import { AddProduct, ProductsDetailModal, } from "./Modals/AddProduct";
-import AddBrand from "./Modals/AddBrands";
-import { getAllBrands } from "api/Brands";
-import { BrandsDetailModal, ProductCategoryModal } from "./Modals/BranchsModals";
+import { AddProduct, ProductsDeleteModal, ProductsDetailModal, } from "./Modals/ProductsModal";
+import {AddBrand,BrandsDetailModal,BrandDeleteModal} from "./Modals/BrandModal";
+import { getAllBrands } from "api/apiBrands";
+import {  ProductCategoryModal } from "./Modals/ProductCategoryModal";
 import { getAllProducts } from "api/apiProducts";
 
 
@@ -17,8 +17,11 @@ const Brands = () => {
     const [modelProduct, setModalProduct] = useState(false);
     const [modelBrand, setModalBrand] = useState(false);
     const [detailBrandsModal, setDetailBranchs] = useState(null);
+    const [updateBrandsModal, setUpdateBranchs] = useState(null);
+    const [deleteBrandModal,setDeleteBrandModal] = useState(null);
     const [detailProductsModal,setDetailProducts] = useState(null);
     const [updateProductsModal,setUpdateProducts] = useState(null);
+    const [deleteProductsModal,setDeleteProducts] = useState(null)
     const [categoryModal, setCategoryModal] = useState(false);
 
     const toggleModalProduct = () => {
@@ -32,14 +35,23 @@ const Brands = () => {
         setCategoryModal(!categoryModal);
     };
 
-    const toggleDeltailBranchs = () => {
+    const toggleDetailBranchs = () => {
         setDetailBranchs(null);
     };
+    const toggleUpdateBrands = () => {
+        setUpdateBranchs(null);
+    }
+    const toggleDeleteBrand = () => {
+        setDeleteBrandModal(null);
+    }
     const toggleDetailProducts = () => {
         setDetailProducts(null);
     }
     const toggleUpdateProdcuts = () => {
         setUpdateProducts(null);
+    }
+    const toggleDeleteProducts = () => {
+        setDeleteProducts(null);
     }
     const closeBtn = (
         <button className="close" onClick={toggleModalProduct} type="button">
@@ -52,15 +64,30 @@ const Brands = () => {
         </button>
     );
     const closeBtnDetailBranchs = (
-        <button className="close" onClick={toggleDeltailBranchs} type="button">
+        <button className="close" onClick={toggleDetailBranchs} type="button">
             &times;
         </button>
     );
+    const closeBtnUpdateBranchs = (
+        <button className="close" onClick={toggleUpdateBrands} type="button">
+            &times;
+        </button>
+    );
+    const closeBtnDeleteBrand = (
+        <button className="close" onClick={toggleDeleteBrand} type="button">
+            &times;
+        </button>
+    )
     const closeBtndetailProducts = (
         <button className="close" onClick={toggleDetailProducts} type="button">
             &times;
         </button>
     );
+    const closeBtnDeleteProducts = (
+        <button className="close" onClick={toggleDeleteProducts} type="button">
+            &times;
+        </button>
+    )
     const closeBtnProductCategory = (
         <button className="close" onClick={toggleCategoryModal} type="button">
             &times;
@@ -166,7 +193,8 @@ const Brands = () => {
                                                                 className="btn-icon btn-simple"
                                                                 color="danger"
                                                                 size="sm"
-                                                                // onClick={() => handleDeleteProduct(product.productsId)}
+                                                                onClick={() => setDeleteProducts(product)}
+                                                                
                                                             >
                                                                 <i className="fa fa-times" />
                                                             </Button>
@@ -223,10 +251,10 @@ const Brands = () => {
                                                             <Button className="btn-icon btn-simple" color="info" size="sm" onClick={() => setDetailBranchs(branch)}>
                                                                 <i className="fa fa-user"></i>
                                                             </Button>{` `}
-                                                            <Button className="btn-icon btn-simple" color="success" size="sm">
+                                                            <Button className="btn-icon btn-simple" color="success" size="sm" onClick={() => setUpdateBranchs(branch)}>
                                                                 <i className="fa fa-edit"></i>
                                                             </Button>{` `}
-                                                            <Button className="btn-icon btn-simple" color="danger" size="sm">
+                                                            <Button className="btn-icon btn-simple" color="danger" size="sm" onClick={() => setDeleteBrandModal(branch)}>
                                                                 <i className="fa fa-times" />
                                                             </Button>{` `}
                                                         </td>
@@ -246,10 +274,28 @@ const Brands = () => {
             {detailBrandsModal && (
                 <BrandsDetailModal
                     isOpen={!!detailBrandsModal}
-                    toggle={toggleDeltailBranchs}
+                    toggle={toggleDetailBranchs}
                     close={closeBtnDetailBranchs}
                     branch={detailBrandsModal}
 
+                />
+            )}
+            {updateBrandsModal && (
+                <BrandsDetailModal
+                    isOpen={!!updateBrandsModal}
+                    toggle={toggleUpdateBrands}
+                    close={closeBtnUpdateBranchs}
+                    branch={updateBrandsModal}
+                    openEdit={true}
+
+                />
+            )}
+            {deleteBrandModal && (
+                <BrandDeleteModal
+                    isOpen={!!deleteBrandModal}
+                    toggle={toggleDeleteBrand}
+                    close={closeBtnDeleteBrand}
+                    brands={deleteBrandModal}
                 />
             )}
             {detailProductsModal && (
@@ -268,6 +314,14 @@ const Brands = () => {
                     products={updateProductsModal}
                     openEdit={true}
                 />
+            )}
+            {deleteProductsModal && (
+                <ProductsDeleteModal
+                isOpen={!!deleteProductsModal}
+                toggle={toggleDeleteProducts}
+                close={closeBtnDeleteProducts}
+                products={deleteProductsModal}
+                /> 
             )}
             {categoryModal && (
                 <ProductCategoryModal

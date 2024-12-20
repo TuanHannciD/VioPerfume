@@ -62,7 +62,6 @@ export const putUpdateProducts = async (id, data) => {
     if (data.imagePath) {
       imageUrl = await uploadImageToCloudinary(data.imagePath);
     }
-    
     // Thêm imageUrl vào data
     data.imagePath = imageUrl;
 
@@ -77,13 +76,12 @@ export const putUpdateProducts = async (id, data) => {
   }
 };
 
-export const getAllProductCategorys = async () => {
+export const  delDeleteProduct = async(id) => {
   try {
-    // Gọi API với role là tham số
-    const response = await api.get('/api/ProductCategorys/GetAll');
-    return response.data; // Trả về dữ liệu người dùng
+    const response = await api.delete(`/api/Products/DeleteProduct/${id}`);
+    return response.data;
   } catch (error) {
-    console.error('Error fetching users:', error);
-    throw error; // Ném lỗi ra ngoài để xử lý
+    console.error('Xóa sản phẩm lỗi', error);
+    throw error;
   }
 }

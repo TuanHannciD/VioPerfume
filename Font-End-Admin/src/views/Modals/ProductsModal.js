@@ -1,19 +1,16 @@
-import { postAddProducts } from 'api/apiProducts';
-import { getAllProductCategorys } from 'api/apiProducts';
-import { getAllBrands } from 'api/Brands';
+import { getAllProductCategorys } from 'api/apiProductCategorys';
+import { getAllBrands } from 'api/apiBrands';
 import React, { useState, useEffect } from 'react';
 import Select from 'react-select';  // Import react-select
 import {
   Modal, ModalHeader, ModalBody, ModalFooter,
   Button, Form, FormGroup, Label, Input, Row, Col, FormFeedback
 } from 'reactstrap';
-import { getByIDProducts, } from 'api/apiProducts';
 import ReactSwitch from 'react-switch';
-import { putUpdateProducts } from 'api/apiProducts';
+import {postAddProducts, putUpdateProducts, delDeleteProduct,getByIDProducts } from 'api/apiProducts';
 import { customStyles } from '../../styles/selectStyles';
 import { addProductFormData, productDetailFormData } from '../../constants/initialFormData';
-import { validateProductForm } from '../../validations/productValidations';
-import { validateUpdateProductForm } from '../../validations/productValidations';
+import { validateProductForm , validateUpdateProductForm} from '../../validations/productValidations';
 
 
 export const AddProduct = ({ isOpen, toggle, close }) => {
@@ -125,8 +122,7 @@ export const AddProduct = ({ isOpen, toggle, close }) => {
                 <Select
                   id="selectInput"
                   value={
-                    brands
-                      .map(brand => ({ value: brand.branchId, label: brand.branchName }))
+                    brands.map(brand => ({ value: brand.branchId, label: brand.branchName }))
                       .find(option => option.value === formData.select) || null
                   }
                   onChange={(selectedOption) => handleSelectChange(selectedOption, 'select')}
@@ -143,8 +139,8 @@ export const AddProduct = ({ isOpen, toggle, close }) => {
                 <Label for="categoryInput">Danh mục</Label>
                 <Select
                   id="categoryInput"
-                  value={categories.map(category => ({ value: category.id, label: category.name })).
-                    find(option => option.value === formData.category) || ''}
+                  value={categories.map(category => ({ value: category.id, label: category.name }))
+                  .find(option => option.value === formData.category) || ''}
                   onChange={(selectedOption) => handleSelectChange(selectedOption, 'category')}
                   options={categories.map(category => ({ value: category.id, label: category.name }))}
                   isClearable
@@ -277,6 +273,7 @@ export const ProductsDetailModal = ({ isOpen, toggle, close, products, openEdit 
   const [brands, setBrands] = useState([]);
   const [categories, setCategories] = useState([]); // Lưu trữ danh mục sản phẩm
   const [errors, setErrors] = useState({});
+
   // Fetch product data khi modal mở
   useEffect(() => {
     const fetchBrandsAndCategories = async () => {
@@ -289,6 +286,7 @@ export const ProductsDetailModal = ({ isOpen, toggle, close, products, openEdit 
         console.error('Error fetching data:', error);
       }
     };
+
     if (isOpen) fetchBrandsAndCategories();
 
     const fetchData = async () => {
@@ -315,7 +313,6 @@ export const ProductsDetailModal = ({ isOpen, toggle, close, products, openEdit 
             brandId: data.brandIdPD || '',
             createBy: data.creatByPD,
             createDate: data.creatDatePD,
-            
           });
         } catch (error) {
           console.error('Error fetching product details:', error);
@@ -342,13 +339,12 @@ export const ProductsDetailModal = ({ isOpen, toggle, close, products, openEdit 
       [fieldName]: selectedOption ? selectedOption.value : null // Cập nhật giá trị cho `branch` hoặc xóa nếu bỏ chọn
     });
   };
-  
 
   const handleImageChange = (e) => {
     const file = e.target.files[0];
     if (file) {
-        setNewImage(file); // Lưu trữ file hình ảnh thay vì URL tạm thời
-        setFormData({ ...formData, image: file }); // Cập nhật hình ảnh vào formData  
+      setNewImage(file); // Lưu trữ file hình ảnh thay vì URL tạm thời
+      setFormData({ ...formData, image: file }); // Cập nhật hình ảnh vào formData  
     }
   };
 
@@ -406,7 +402,7 @@ export const ProductsDetailModal = ({ isOpen, toggle, close, products, openEdit 
                 {isEditing && (
                   <div className="mt-3">
                     <label className="btn btn-primary">
-                      Chọn hình ảnh 
+                      Chọn hình ảnh
                       <input
                         type="file"
                         accept="image/*"
@@ -419,67 +415,190 @@ export const ProductsDetailModal = ({ isOpen, toggle, close, products, openEdit 
               </div>
             </Col>
             <Col md="4">
-            <div className='blockquote blockquote-primary'>
+              <div className='blockquote blockquote-primary'>
                 <h4>Thông tin cơ bản</h4>
-                <p><strong>Tên:</strong> {isEditing ? <Input type="text" name="nameProducts" value={formData.nameProducts} onChange={handleInputChange} invalid={!!errors.nameProducts} /> : detailProducts.nameProducts}</p>
-                <FormFeedback>{errors.nameProducts}</FormFeedback>
-                <p><strong>Mã sản phẩm:</strong> {isEditing ? <Input type="text" name="codeProducts" value={formData.codeProducts} onChange={handleInputChange} /> : detailProducts.codeProductsPD}</p>
-                <p><strong>Mô tả:</strong> {isEditing ? <Input type="textarea" name="description" value={formData.description} onChange={handleInputChange} /> : detailProducts.descriptionPD}</p>
-                <p><strong>Xuất xứ:</strong> {isEditing ? <Input type="text" name="origin" value={formData.origin} onChange={handleInputChange} /> : detailProducts.originPD}</p>
-                <p><strong>Nhãn hàng:</strong>
+                <div><strong>Tên:</strong>
                   {isEditing ? (
-                    <Select
-                      id="selectInput"
-                      value={
-                        brands
-                          .map(brand => ({ value: brand.branchId, label: brand.branchName }))
-                          .find(option => option.value === formData.branch) || null
-                      }
-                      onChange={(selectedOption) => handleSelectChange(selectedOption, 'branch')}
-                      options={brands.map(brand => ({ value: brand.branchId, label: brand.branchName }))}
-                      isClearable
-                      styles={customStyles}
-                      placeholder="Chọn thương hiệu"
+                    <Input
+                      type="text"
+                      name="nameProducts"
+                      value={formData.nameProducts}
+                      onChange={handleInputChange}
+                      invalid={!!errors.nameProducts}
                     />
+                  ) : detailProducts.nameProducts}
+                  {errors.nameProducts && <FormFeedback>{errors.nameProducts}</FormFeedback>}
+                </div>
+
+                <div><strong>Mã sản phẩm:</strong>
+                  {isEditing ? (
+                    <Input
+                      type="text"
+                      name="codeProducts"
+                      value={formData.codeProducts}
+                      onChange={handleInputChange}
+                      invalid={!!errors.codeProducts}
+                    />
+                  ) : detailProducts.codeProductsPD}
+                  {errors.codeProducts && <FormFeedback>{errors.codeProducts}</FormFeedback>}
+                </div>
+                <div>
+                  <strong>Mô tả:</strong>
+                  {isEditing ?
+                    <Input
+                      type="textarea"
+                      name="description"
+                      value={formData.description}
+                      onChange={handleInputChange}
+                    /> : detailProducts.descriptionPD}
+                </div>
+
+                <div><strong>Xuất xứ:</strong>
+                  {isEditing ?
+                    <Input
+                      type="text"
+                      name="origin"
+                      value={formData.origin}
+                      onChange={handleInputChange}
+                    /> : detailProducts.originPD}
+                </div>
+
+                <div>
+                  <strong>Nhãn hàng:</strong>
+                  {isEditing ? (
+                    <div>
+                      <Select
+                        id="selectInput"
+                        value={
+                          brands
+                            .map((brand) => ({ value: brand.branchId, label: brand.branchName }))
+                            .find((option) => option.value === formData.branch) || null
+                        }
+                        onChange={(selectedOption) => handleSelectChange(selectedOption, 'branch')}
+                        options={brands.map((brand) => ({ value: brand.branchId, label: brand.branchName }))}
+                        isClearable
+                        styles={customStyles}
+                        placeholder="Chọn thương hiệu"
+                      />
+                      {errors.branch && (
+                        <div style={{ color: 'yellow', marginTop: '4px' }}>{errors.branch}</div>
+                      )}
+                    </div>
                   ) : (
                     detailProducts.brandName || "Không xác định"
                   )}
-                </p>
-                <p>
+                </div>
+
+                <div>
                   <strong>Danh mục sản phẩm:</strong>
                   {isEditing ? (
-                    <Select
-                      id="categoryInput"
-                      value={categories.map(category => ({ value: category.id, label: category.name })).
-                        find(option => option.value === formData.category) || ''}
-                      onChange={(selectedOption) => handleSelectChange(selectedOption, 'category')}
-                      options={categories.map(category => ({ value: category.id, label: category.name }))}
-                      isClearable
-                      styles={customStyles}
-                      placeholder="Chọn danh mục"
-                    />
+                    <div>
+                      <Select
+                        id="categoryInput"
+                        value={
+                          categories
+                            .map((category) => ({ value: category.id, label: category.name }))
+                            .find((option) => option.value === formData.category) || ''
+                        }
+                        onChange={(selectedOption) => handleSelectChange(selectedOption, 'category')}
+                        options={categories.map((category) => ({ value: category.id, label: category.name }))}
+                        isClearable
+                        styles={customStyles}
+                        placeholder="Chọn danh mục"
+                      />
+                      {errors.category && (
+                        <div style={{ color: 'yellow', marginTop: '4px' }}>{errors.category}</div>
+                      )}
+                    </div>
                   ) : (
                     detailProducts.productCategorysName || 'Không xác định'
                   )}
-                </p>
+                </div>
+
               </div>
               <div className='blockquote blockquote-primary'>
                 <h4>Giá cả</h4>
-                <p><strong>Giá:</strong> {isEditing ? <Input type="number" name="price" value={formData.price} onChange={handleInputChange} /> : new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(detailProducts.pricePD)}</p>
-                <p><strong>Giá Sale:</strong> {isEditing ? <Input type="number" name="priceSale" value={formData.priceSale} onChange={handleInputChange} /> : (detailProducts.priceSale ? new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(detailProducts.priceSalePD) : 'Không có')}</p>
-            </div>
+                <div>
+                  <strong>Giá:</strong>
+                  {isEditing ?
+                    <Input
+                      type="number"
+                      name="price"
+                      value={formData.price}
+                      onChange={handleInputChange}
+                      invalid={errors.price}
+                    />
+                    : new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(detailProducts.pricePD)}
+                  <FormFeedback>{errors.price}</FormFeedback>
+                </div>
+                <div>
+                  <strong>Giá Sale:</strong>
+                  {isEditing ?
+                    <Input
+                      type="number"
+                      name="priceSale"
+                      value={formData.priceSale}
+                      onChange={handleInputChange}
+                    />
+                    : (detailProducts.priceSale ?
+                      new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(detailProducts.priceSalePD) : 'Không có')}
+                </div>
+              </div>
             </Col>
             <Col md="4">
               <div className='blockquote blockquote-primary'>
                 <h4>Chi tiết sản phẩm</h4>
-                <p><strong>Số Lượng:</strong> {isEditing ? <Input type='number' name='quantity' value={formData.quantity} onChange={handleInputChange} /> : `${detailProducts.quantityPD}`}</p>
-                <p><strong>Dung tích:</strong> {isEditing ? <Input type="number" name="capacity" value={formData.capacity} onChange={handleInputChange} /> : `${detailProducts.capacityPD} ml`}</p>
-                <p><strong>Nhóm hương:</strong> {isEditing ? <Input type="text" name="fragranceGroup" value={formData.fragranceGroup} onChange={handleInputChange} /> : detailProducts.fragranceGroupPD}</p>
-                <p><strong>Phong cách:</strong> {isEditing ? <Input type="text" name="style" value={formData.style} onChange={handleInputChange} /> : detailProducts.stylePD}</p>
+                <div>
+                  <strong>Số Lượng:</strong>
+                  {isEditing ?
+                    <Input type='number'
+                      name='quantity'
+                      value={formData.quantity}
+                      onChange={handleInputChange}
+                      invalid={!!errors.quantity}
+                    />
+                    : `${detailProducts.quantityPD}`}
+                  <FormFeedback>{errors.quantity}</FormFeedback>
+                </div>
+                <div>
+                  <strong>Dung tích:</strong>
+                  {isEditing ?
+                    <Input
+                      type="number"
+                      name="capacity"
+                      value={formData.capacity}
+                      onChange={handleInputChange}
+                      invalid={!!errors.capacity}
+                    />
+                    : `${detailProducts.capacityPD} ml`}
+                  <FormFeedback>{errors.capacity}</FormFeedback>
+                </div>
+
+                <div>
+                  <strong>Nhóm hương:</strong>
+                  {isEditing ?
+                    <Input
+                      type="text"
+                      name="fragranceGroup"
+                      value={formData.fragranceGroup}
+                      onChange={handleInputChange}
+                    />
+                    : detailProducts.fragranceGroupPD}
+                </div>
+                <div>
+                  <strong>Phong cách:</strong>
+                  {isEditing ?
+                    <Input
+                      type="text"
+                      name="style"
+                      value={formData.style}
+                      onChange={handleInputChange}
+                    />
+                    : detailProducts.stylePD}
+                </div>
               </div>
               <div className="blockquote blockquote-primary">
                 <h4>Trạng thái</h4>
-
                 <div className="d-flex align-items-center mb-2">
                   <label className="mr-2 mt-2">
                     <strong>Hiển thị tại trang chủ:</strong>
@@ -494,7 +613,7 @@ export const ProductsDetailModal = ({ isOpen, toggle, close, products, openEdit 
                       offColor="#ccc"
                     />
                   ) : (
-                    <span >{detailProducts.isHomePD ? "Có" : "Không"}</span>
+                    <span>{detailProducts.isHomePD ? "Có" : "Không"}</span>
                   )}
                 </div>
 
@@ -552,7 +671,6 @@ export const ProductsDetailModal = ({ isOpen, toggle, close, products, openEdit 
                   )}
                 </div>
               </div>
-
             </Col>
           </Row>
         ) : (
@@ -574,6 +692,57 @@ export const ProductsDetailModal = ({ isOpen, toggle, close, products, openEdit 
     </Modal>
   );
 };
+
+export const ProductsDeleteModal = ({ isOpen, toggle, close, products,  }) => {
+  const [loading, setLoading] = useState(false);
+
+  // Xử lý khi modal mở và có sản phẩm để xóa
+  useEffect(() => {
+    if (isOpen && products && products.productsId) {
+      console.log('Đang mở modal xóa sản phẩm với ID:', products.productsId);
+    }
+  }, [isOpen, products]);
+
+  const handleDeleteProduct = () => {
+    if (!products || !products.productsId) {
+      console.log('Không có ID sản phẩm hoặc thông tin sản phẩm');
+      return;
+    }
+
+    setLoading(true);
+    delDeleteProduct(products.productsId)  // Giả sử delDeleteProduct là hàm xóa sản phẩm (có thể là API call)
+      .then(() => {
+        console.log('Sản phẩm đã bị xóa thành công');
+        toggle(); // Đóng modal sau khi xóa thành công
+      })
+      .catch((error) => {
+        console.error('Lỗi khi xóa sản phẩm:', error);
+      })
+      .finally(() => {
+        setLoading(false);  // Đặt lại trạng thái loading khi kết thúc
+      });
+  };
+
+  return (
+    <Modal isOpen={isOpen} toggle={toggle}>
+      <ModalHeader toggle={toggle} close={close}>
+          Xóa Sản Phẩm
+      </ModalHeader>
+      <ModalBody>
+        <p>Bạn có chắc chắn muốn xóa sản phẩm này không?</p>
+      </ModalBody>
+      <ModalFooter>
+        <Button color="secondary" onClick={toggle}>
+          Đóng
+        </Button>
+        <Button color="primary" onClick={handleDeleteProduct} disabled={loading}>
+          {loading ? 'Đang xóa...' : 'Xóa Sản Phẩm'}
+        </Button>
+      </ModalFooter>
+    </Modal>
+  );
+};
+
 
 
 
