@@ -3,6 +3,7 @@ import Dashboard from "views/Dashboard.js";
 import Brands from "views/Brands";
 import UserProfile from "views/UserProfile.js";
 import Oders from "views/Oders";
+import OrderPage from "views/OrderPage";
 
 var routes = [
   {
@@ -27,6 +28,14 @@ var routes = [
     component: <Brands/>,
     layout: "/admin"
   },
+  {
+    path: "/orderPages",
+    name: "OrderPages",
+    icon: "tim-icons icon-laptop",
+    component: <OrderPage/>,
+    layout: "/admin"
+  },
+
   {
     path: "/oders",
     name: "Oders",

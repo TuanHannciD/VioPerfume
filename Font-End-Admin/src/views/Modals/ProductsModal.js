@@ -415,7 +415,7 @@ export const ProductsDetailModal = ({ isOpen, toggle, close, products, openEdit 
               </div>
             </Col>
             <Col md="4">
-              <div className='blockquote blockquote-primary'>
+              <div className='blockquote blockquote-primary rounded'>
                 <h4>Thông tin cơ bản</h4>
                 <div><strong>Tên:</strong>
                   {isEditing ? (
@@ -516,7 +516,7 @@ export const ProductsDetailModal = ({ isOpen, toggle, close, products, openEdit 
                 </div>
 
               </div>
-              <div className='blockquote blockquote-primary'>
+              <div className='blockquote blockquote-primary rounded'>
                 <h4>Giá cả</h4>
                 <div>
                   <strong>Giá:</strong>
@@ -546,7 +546,7 @@ export const ProductsDetailModal = ({ isOpen, toggle, close, products, openEdit 
               </div>
             </Col>
             <Col md="4">
-              <div className='blockquote blockquote-primary'>
+              <div className='blockquote blockquote-primary rounded'>
                 <h4>Chi tiết sản phẩm</h4>
                 <div>
                   <strong>Số Lượng:</strong>
@@ -597,7 +597,7 @@ export const ProductsDetailModal = ({ isOpen, toggle, close, products, openEdit 
                     : detailProducts.stylePD}
                 </div>
               </div>
-              <div className="blockquote blockquote-primary">
+              <div className="blockquote blockquote-primary rounded">
                 <h4>Trạng thái</h4>
                 <div className="d-flex align-items-center mb-2">
                   <label className="mr-2 mt-2">
@@ -742,7 +742,4 @@ export const ProductsDeleteModal = ({ isOpen, toggle, close, products,  }) => {
     </Modal>
   );
 };
-
-
-
 

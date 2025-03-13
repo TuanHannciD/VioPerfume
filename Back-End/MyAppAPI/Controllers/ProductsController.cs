@@ -185,5 +185,23 @@ namespace MyAppAPI.Controllers
                 return StatusCode(500, new { Message = "An error occurred while updating the product", Error = ex.Message });
             }
         }
+        [HttpDelete("DeleteProduct/{id}")]
+        public async Task<IActionResult> DeleteBranch(int id)
+        {
+            var product = await _dbContext.products.FindAsync(id);
+
+            if (product == null)
+            {
+                return NotFound(new { message = "Branch not found" });
+            }
+
+            product.IsDeleted = true;
+            product.DeletedDate = DateTime.Now;
+
+            _dbContext.products.Update(product);
+            await _dbContext.SaveChangesAsync();
+
+            return Ok(new { message = "Branch marked as deleted" });
+        }
     }
 }

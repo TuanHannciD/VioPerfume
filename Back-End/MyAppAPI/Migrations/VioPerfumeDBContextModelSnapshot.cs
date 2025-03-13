@@ -47,6 +47,20 @@ namespace MyAppAPI.Migrations
                         .HasFilter("[NormalizedName] IS NOT NULL");
 
                     b.ToTable("AspNetRoles", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            Id = "admin-role-id",
+                            Name = "Admin",
+                            NormalizedName = "ADMIN"
+                        },
+                        new
+                        {
+                            Id = "customer-role-id",
+                            Name = "Customer",
+                            NormalizedName = "CUSTOMER"
+                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -134,6 +148,13 @@ namespace MyAppAPI.Migrations
                     b.HasIndex("RoleId");
 
                     b.ToTable("AspNetUserRoles", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            UserId = "admin-id",
+                            RoleId = "admin-role-id"
+                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
@@ -293,6 +314,29 @@ namespace MyAppAPI.Migrations
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
 
                     b.ToTable("AspNetUsers", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            Id = "admin-id",
+                            AccessFailedCount = 0,
+                            Address = "VietNam",
+                            ConcurrencyStamp = "36370177-db91-425c-a1c3-94d15dfb0067",
+                            CreatDate = new DateTime(2025, 3, 1, 10, 20, 2, 923, DateTimeKind.Utc).AddTicks(7954),
+                            Email = "admin@example.com",
+                            EmailConfirmed = true,
+                            FullName = "Administrator",
+                            IsDeleted = false,
+                            LockoutEnabled = false,
+                            ModifiedBy = "System",
+                            NormalizedEmail = "ADMIN@EXAMPLE.COM",
+                            NormalizedUserName = "ADMIN@EXAMPLE.COM",
+                            PasswordHash = "AQAAAAIAAYagAAAAEHhAQsIAbG2jov+NLebdwAhwgTbHhtJKjvoWheNpWv/kc5CBoOHVlxWuS6XbPUbbtw==",
+                            PhoneNumberConfirmed = false,
+                            SecurityStamp = "e1dd702f-2fcf-46fa-a31f-12b6e026da1f",
+                            TwoFactorEnabled = false,
+                            UserName = "admin@example.com"
+                        });
                 });
 
             modelBuilder.Entity("WebOnline.Models.EF.Brand", b =>
@@ -316,9 +360,6 @@ namespace MyAppAPI.Migrations
                     b.Property<string>("Description")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("IsDelete")
-                        .HasColumnType("bit");
 
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
@@ -350,15 +391,6 @@ namespace MyAppAPI.Migrations
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("ProductId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("Quantity")
-                        .HasColumnType("int");
-
-                    b.Property<decimal>("TotalPrice")
-                        .HasColumnType("decimal(18,2)");
 
                     b.Property<string>("UserID")
                         .IsRequired()

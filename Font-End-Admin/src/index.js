@@ -27,6 +27,7 @@ import "@fortawesome/fontawesome-free/css/all.min.css";
 
 import ThemeContextWrapper from "./components/ThemeWrapper/ThemeWrapper";
 import BackgroundColorWrapper from "./components/BackgroundColorWrapper/BackgroundColorWrapper";
+import { CartProvider } from "contexts/CartContext";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 
@@ -35,13 +36,15 @@ root.render(
     <ThemeContextWrapper>
       <BackgroundColorWrapper>
         <BrowserRouter>
-          <Routes>
-            <Route path="/admin/*" element={<AdminLayout />} />
-            <Route
-              path="*"
-              element={<Navigate to="/admin/dashboard" replace />}
-            />
-          </Routes>
+          <CartProvider>
+            <Routes>
+              <Route path="/admin/*" element={<AdminLayout />} />
+              <Route
+                path="*"
+                element={<Navigate to="/admin/dashboard" replace />}
+              />
+            </Routes>
+          </CartProvider>
         </BrowserRouter>
       </BackgroundColorWrapper>
     </ThemeContextWrapper>

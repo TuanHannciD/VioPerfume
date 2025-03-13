@@ -6,23 +6,71 @@ import {
 } from "reactstrap";
 import CustomScrollbar from "utils/CustomScrollbar";
 import { AddProduct, ProductsDeleteModal, ProductsDetailModal, } from "./Modals/ProductsModal";
-import {AddBrand,BrandsDetailModal,BrandDeleteModal} from "./Modals/BrandModal";
+import { AddBrand, BrandsDetailModal, BrandDeleteModal } from "./Modals/BrandModal";
 import { getAllBrands } from "api/apiBrands";
-import {  ProductCategoryModal } from "./Modals/ProductCategoryModal";
+import { ProductCategoryModal } from "./Modals/ProductCategoryModal";
 import { getAllProducts } from "api/apiProducts";
-
-
+import { useCartActions } from "services/cartService";
+import { useCart } from "contexts/CartContext";
 
 const Brands = () => {
     const [modelProduct, setModalProduct] = useState(false);
     const [modelBrand, setModalBrand] = useState(false);
     const [detailBrandsModal, setDetailBranchs] = useState(null);
     const [updateBrandsModal, setUpdateBranchs] = useState(null);
-    const [deleteBrandModal,setDeleteBrandModal] = useState(null);
-    const [detailProductsModal,setDetailProducts] = useState(null);
-    const [updateProductsModal,setUpdateProducts] = useState(null);
-    const [deleteProductsModal,setDeleteProducts] = useState(null)
+    const [deleteBrandModal, setDeleteBrandModal] = useState(null);
+    const [detailProductsModal, setDetailProducts] = useState(null);
+    const [updateProductsModal, setUpdateProducts] = useState(null);
+    const [deleteProductsModal, setDeleteProducts] = useState(null)
     const [categoryModal, setCategoryModal] = useState(false);
+
+    const {handleAddToCart} = useCartActions();
+    const {refreshCart} = useCart();
+
+    const addToCart = async (product) => {
+        try {
+            await handleAddToCart(product);
+            await refreshCart();
+        } catch (error) {
+            console.error("Lối khi thêm sảm phẩm: ",error);
+        }
+    };
+    // const increaseQuantity = (product) => {
+    //     cartQuantity.current += 1
+
+    //     if (timer) clearTimeout(timer);
+
+    //     const newTimer = setTimeout(() => {
+    //         handleAddToCart(product);
+    //     }, 1000);
+    //     setTimer(newTimer);
+    // };
+
+    // const handleAddToCart = (product) => {
+    //     if (!product || !product.productsId) {
+    //         console.log("Không có ID sản phẩm hoặc thông tin sản phẩm");
+    //         return;
+    //     }
+    
+    //     const data = {
+    //         productID: product.productsId,
+    //         quantity: cartQuantity.current,
+    //     };
+    
+    //     console.log("Sending data to API:", data);
+    
+    //     postAddCart(data)
+    //         .then(() => {
+    //             console.log("Sản phẩm đã được thêm vào giỏ hàng thành công");
+    //             cartQuantity.current = 0;
+    //             fetchCart(); // Gọi lại fetchCart sau khi thêm sản phẩm
+    //         })
+    //         .catch((error) => {
+    //             console.error("Lỗi khi thêm sản phẩm vào giỏ hàng:", error);
+    //         });
+    // };
+    
+
 
     const toggleModalProduct = () => {
         setModalProduct(!modelProduct);
@@ -53,6 +101,7 @@ const Brands = () => {
     const toggleDeleteProducts = () => {
         setDeleteProducts(null);
     }
+
     const closeBtn = (
         <button className="close" onClick={toggleModalProduct} type="button">
             &times;
@@ -98,6 +147,7 @@ const Brands = () => {
             &times;
         </button>
     )
+
 
     const [products, setProducts] = useState([]);
     const [getBranch, setGetBranch] = useState([]);
@@ -180,7 +230,7 @@ const Brands = () => {
                                                                 onClick={() => setDetailProducts(product)}
                                                             >
                                                                 <i className="fa fa-user"></i>
-                                                            </Button>{" "}
+                                                            </Button>{` `}
                                                             <Button
                                                                 className="btn-icon btn-simple"
                                                                 color="success"
@@ -188,15 +238,24 @@ const Brands = () => {
                                                                 onClick={() => setUpdateProducts(product)}
                                                             >
                                                                 <i className="fa fa-edit"></i>
-                                                            </Button>{" "}
+                                                            </Button>{` `}
                                                             <Button
                                                                 className="btn-icon btn-simple"
                                                                 color="danger"
                                                                 size="sm"
                                                                 onClick={() => setDeleteProducts(product)}
-                                                                
+
                                                             >
                                                                 <i className="fa fa-times" />
+                                                            </Button>{` `}
+                                                            <Button
+                                                                className="btn-icon btn-warning"
+                                                                color="danger"
+                                                                size="sm"
+                                                                onClick={() => addToCart(product.productsId)}
+                                                                
+                                                            >
+                                                                <i className="tim-icons icon-basket-simple" />
                                                             </Button>
                                                         </td>
                                                     </tr>
@@ -299,7 +358,7 @@ const Brands = () => {
                 />
             )}
             {detailProductsModal && (
-                <ProductsDetailModal 
+                <ProductsDetailModal
                     isOpen={!!detailProductsModal}
                     toggle={toggleDetailProducts}
                     close={closeBtndetailProducts}
@@ -317,11 +376,11 @@ const Brands = () => {
             )}
             {deleteProductsModal && (
                 <ProductsDeleteModal
-                isOpen={!!deleteProductsModal}
-                toggle={toggleDeleteProducts}
-                close={closeBtnDeleteProducts}
-                products={deleteProductsModal}
-                /> 
+                    isOpen={!!deleteProductsModal}
+                    toggle={toggleDeleteProducts}
+                    close={closeBtnDeleteProducts}
+                    products={deleteProductsModal}
+                />
             )}
             {categoryModal && (
                 <ProductCategoryModal
@@ -329,7 +388,7 @@ const Brands = () => {
                     toggle={toggleCategoryModal}
                     close={closeBtnProductCategory}
                 />
-                    
+
             )}
         </div>
 

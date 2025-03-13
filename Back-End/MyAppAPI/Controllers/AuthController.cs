@@ -7,20 +7,24 @@ using Microsoft.IdentityModel.Tokens;
 using System.Security.Claims;
 using System.Text;
 using MyAppAPI.DTO;
+using WebOnline.Models;
 
 public class AuthController : ControllerBase
 {
     private readonly ILogger<AuthController> _logger;
+    private readonly VioPerfumeDBContext _dbContext;
     private readonly UserManager<ApplicationUser> _userManager;
     private readonly SignInManager<ApplicationUser> _signInManager;
     private readonly JwtSettings _jwtSettings;
 
-    public AuthController(ILogger<AuthController> logger, UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager, JwtSettings jwt)
+    public AuthController(ILogger<AuthController> logger, UserManager<ApplicationUser> userManager,
+        SignInManager<ApplicationUser> signInManager, JwtSettings jwt, VioPerfumeDBContext vioPerfumeDBContext)
     {
         _logger = logger;
         _userManager = userManager;
         _signInManager = signInManager;
         _jwtSettings = jwt;
+        _dbContext = vioPerfumeDBContext;
     }
 
     
@@ -79,6 +83,8 @@ public class AuthController : ControllerBase
                     Expires = DateTime.Now.AddHours(1)
                    // Domain = ".domain.com", // Cho phép cookie chia sẻ trên tất cả các subdomain
                 });
+                await _dbContext.EnsureCartExistsAsync();
+
                 return Ok("Login successful");
             }
             else

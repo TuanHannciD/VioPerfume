@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect , useCallback} from "react";
 import { Route, Routes, Navigate, useLocation } from "react-router-dom";
 // javascript plugin used to create scrollbars on windows
 import PerfectScrollbar from "perfect-scrollbar";
@@ -8,15 +8,45 @@ import AdminNavbar from "components/Navbars/AdminNavbar.js";
 import Footer from "components/Footer/Footer.js";
 import Sidebar from "components/Sidebar/Sidebar.js";
 import FixedPlugin from "components/FixedPlugin/FixedPlugin.js";
+import CartPlugin from "components/FixedPlugin/CardPlugin";
 
 import routes from "routes.js";
 
 import logo from "assets/img/react-logo.png";
 import { BackgroundColorContext } from "contexts/BackgroundColorContext";
+import Brands from "views/Brands";
+import { getCart } from "api/apiCarts";
+import OrderPage from "views/OrderPage";
+
 
 var ps;
 
 function Admin(props) {
+
+  
+  const [cartItems, setCartItems] = useState([]); // State lưu giỏ hàng
+
+  // Dùng useCallback để tránh vòng lặp useEffect
+  const fetchCart = useCallback(async () => {
+    try {
+      console.log("Fetching cart...");
+      const response = await getCart();
+      console.log("Cart data:", response);
+      setCartItems(response.cartItems || []);
+      return response.cartItems
+    } catch (error) {
+      console.error("Lỗi lấy giỏ hàng:", error);
+    }
+  }, []); // Không có dependency để tránh gọi lại liên tục
+
+  useEffect(() => {
+    fetchCart(); // Gọi API khi component mount
+  }, [fetchCart]); // Chỉ chạy lại nếu fetchCart thay đổi
+  
+  <Brands fetchCart={fetchCart} />;
+  <OrderPage fetchCart={fetchCart} cartItems={cartItems} />
+
+
   const location = useLocation();
   const mainPanelRef = React.useRef(null);
   const [sidebarOpened, setsidebarOpened] = React.useState(
@@ -61,11 +91,11 @@ function Admin(props) {
     document.documentElement.classList.toggle("nav-open");
     setsidebarOpened(!sidebarOpened);
   };
-  const getRoutes = (routes) => {
+  const getRoutes = (routes,fetchCart) => {
     return routes.map((prop, key) => {
       if (prop.layout === "/admin") {
         return (
-          <Route path={prop.path} element={prop.component} key={key} exact />
+          <Route path={prop.path}   element={React.cloneElement(prop.component, { fetchCart })} key={key} exact />
         );
       } else {
         return null;
@@ -89,7 +119,7 @@ function Admin(props) {
               routes={routes}
               logo={{
                 outterLink: "https://www.creative-tim.com/",
-                text: "Creative Tim",
+                text: "VioPerfume",
                 imgSrc: logo,
               }}
               toggleSidebar={toggleSidebar}
@@ -101,7 +131,7 @@ function Admin(props) {
                 sidebarOpened={sidebarOpened}
               />
               <Routes>
-                {getRoutes(routes)}
+                {getRoutes(routes,fetchCart)}
                 <Route
                   path="/"
                   element={<Navigate to="/admin/dashboard" replace />}
@@ -114,6 +144,8 @@ function Admin(props) {
             </div>
           </div>
           <FixedPlugin bgColor={color} handleBgClick={changeColor} />
+          <CartPlugin bgColor={color} handleBgClick={changeColor} cartItems={cartItems} fetchCart={fetchCart}/>
+          
         </React.Fragment>
       )}
     </BackgroundColorContext.Consumer>

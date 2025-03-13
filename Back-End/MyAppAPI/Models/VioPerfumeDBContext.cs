@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.IdentityModel.JsonWebTokens;
 using MyAppAPI.Models.EF;
+using System.Reflection;
 using System.Security.Claims;
 using WebOnline.Models.EF;
 
@@ -70,6 +71,23 @@ namespace WebOnline.Models
                 {
                     baseUser.DeletedDate = currentDate;
                 }
+            }
+        }
+         
+        public async Task EnsureCartExistsAsync()
+        {
+            var userID = _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+                
+            if (userID == null) return;
+            var existingCart = await carts.FirstOrDefaultAsync(c => c.UserID == userID);
+            if (existingCart == null)
+            {
+                var newCart = new Cart
+                {
+                    UserID = userID
+                };
+                carts.Add(newCart);
+                await SaveChangesAsync();
             }
         }
 
@@ -153,6 +171,8 @@ namespace WebOnline.Models
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
+            modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
+
         }
     }
 }

@@ -13,9 +13,6 @@ namespace WebOnline.Models.EF
         public int Id { get; set; }
         [ForeignKey("ApplicationUser")]
         public string UserID { get; set; }
-        public int ProductId { get; set; }
-        public int Quantity { get; set; }
-        public decimal TotalPrice { get; set; }
 
         public  ApplicationUser ApplicationUser { get; set; }
         public ICollection<CartItem> cartItems { get; set; }

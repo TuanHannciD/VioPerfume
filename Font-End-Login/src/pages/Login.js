@@ -18,24 +18,28 @@ const Login = () => {
   const [password, setPassword] = useState('');
   const [errorMessage, setErrorMessage] = useState(null); // Quản lý thông báo lỗi
   const [isLoading, setIsLoading] = useState(false); // Quản lý trạng thái loading
+  const [showAlert, setShowAlert] = useState(false); // Quản lý hiển thị Alert
 
+  // Xử lý đăng nhập
   const handleLogin = async (e) => {
     e.preventDefault(); // Ngăn form reload khi submit
-
-    setIsLoading(true); // Bắt đầu loading
+    setIsLoading(true);  // Bắt đầu trạng thái loading
     setErrorMessage(null); // Xóa lỗi trước đó (nếu có)
 
     try {
-      const data = await login({ username, password }); // Gọi API login
-      setToken(data.token); // Lưu token vào storage
-      alert('Login successful!');
-      window.location.href = 'http://localhost:3001/admin/';
+      const data = await login({ username, password });  // Gọi API login
+      setToken(data.token);  // Lưu token vào localStorage
+      setShowAlert(true); // Hiển thị Alert sau khi đăng nhập thành công
     } catch (error) {
       console.error('Login failed:', error);
-      setErrorMessage('Invalid credentials.'); // Cập nhật lỗi
+      setErrorMessage('Invalid credentials.');  // Hiển thị thông báo lỗi khi đăng nhập thất bại
     } finally {
       setIsLoading(false); // Tắt trạng thái loading
     }
+  };
+  const handleConfirm = () => {
+    setShowAlert(false); // Ẩn Alert
+    window.location.href = 'http://localhost:3001/admin/'; // Chuyển hướng tới trang admin
   };
 
   return (
@@ -103,7 +107,25 @@ const Login = () => {
           </MDBCol>
         </MDBRow>
       </MDBCard>
+      {/* Lớp phủ mờ khi hiển thị Alert */}
+      {showAlert && (
+        <div
+          className="position-fixed top-0 start-0 w-100 h-100 bg-dark opacity-50 z-index-998"
+          style={{ backdropFilter: 'blur(5px)' }}
+        />
+      )}
+
+      {/* Hiển thị Alert chính giữa màn hình */}
+      {showAlert && (
+        <div className="alert alert-success d-flex justify-content-between align-items-center position-fixed top-50 start-50 translate-middle m-3 z-index-999" role="alert">
+          <span>Đăng nhập thành công!</span>
+          <button onClick={handleConfirm} className="btn btn-primary">
+            OK
+          </button>
+        </div>
+      )}
     </MDBContainer>
+    
   );
 };
 
