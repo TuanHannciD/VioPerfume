@@ -35,40 +35,6 @@ const Brands = () => {
             console.error("Lối khi thêm sảm phẩm: ",error);
         }
     };
-    // const increaseQuantity = (product) => {
-    //     cartQuantity.current += 1
-
-    //     if (timer) clearTimeout(timer);
-
-    //     const newTimer = setTimeout(() => {
-    //         handleAddToCart(product);
-    //     }, 1000);
-    //     setTimer(newTimer);
-    // };
-
-    // const handleAddToCart = (product) => {
-    //     if (!product || !product.productsId) {
-    //         console.log("Không có ID sản phẩm hoặc thông tin sản phẩm");
-    //         return;
-    //     }
-    
-    //     const data = {
-    //         productID: product.productsId,
-    //         quantity: cartQuantity.current,
-    //     };
-    
-    //     console.log("Sending data to API:", data);
-    
-    //     postAddCart(data)
-    //         .then(() => {
-    //             console.log("Sản phẩm đã được thêm vào giỏ hàng thành công");
-    //             cartQuantity.current = 0;
-    //             fetchCart(); // Gọi lại fetchCart sau khi thêm sản phẩm
-    //         })
-    //         .catch((error) => {
-    //             console.error("Lỗi khi thêm sản phẩm vào giỏ hàng:", error);
-    //         });
-    // };
     
 
 

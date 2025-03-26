@@ -4,6 +4,7 @@ import Brands from "views/Brands";
 import UserProfile from "views/UserProfile.js";
 import Oders from "views/Oders";
 import OrderPage from "views/OrderPage";
+import Voucher from "views/Vouchers";
 
 var routes = [
   {
@@ -41,6 +42,14 @@ var routes = [
     name: "Oders",
     icon: "tim-icons icon-cart",
     component: <Oders/>,
+    layout: "/admin"
+  },
+
+  {
+    path: "/vouchers",
+    name: "Vouchers",
+    icon: "tim-icons icon-tag",
+    component: <Voucher/>,
     layout: "/admin"
   },
   // {

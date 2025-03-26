@@ -87,7 +87,7 @@ function Oders() {
                                                 <td>Alex Mike</td>
                                                 <td>Designer</td>
                                                 <td className="text-center">2012</td>
-                                                <td className="text-right">€ 99,201</td>>
+                                                <td className="text-right">€ 99,201</td>
                                             </tr>
                                             <tr>
                                                 <td className="text-center">3</td>
