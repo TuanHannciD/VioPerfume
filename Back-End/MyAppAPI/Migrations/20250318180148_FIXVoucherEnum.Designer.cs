@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using WebOnline.Models;
 
@@ -11,9 +12,11 @@ using WebOnline.Models;
 namespace MyAppAPI.Migrations
 {
     [DbContext(typeof(VioPerfumeDBContext))]
-    partial class VioPerfumeDBContextModelSnapshot : ModelSnapshot
+    [Migration("20250318180148_FIXVoucherEnum")]
+    partial class FIXVoucherEnum
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -321,8 +324,8 @@ namespace MyAppAPI.Migrations
                             Id = "admin-id",
                             AccessFailedCount = 0,
                             Address = "VietNam",
-                            ConcurrencyStamp = "2d89b063-8f25-43b4-9344-51c11704fd20",
-                            CreatDate = new DateTime(2025, 3, 22, 11, 42, 23, 983, DateTimeKind.Utc).AddTicks(4303),
+                            ConcurrencyStamp = "d25f6155-7074-46c1-b3a9-8c15a7c44717",
+                            CreatDate = new DateTime(2025, 3, 18, 18, 1, 47, 661, DateTimeKind.Utc).AddTicks(6032),
                             Email = "admin@example.com",
                             EmailConfirmed = true,
                             FullName = "Administrator",
@@ -331,9 +334,9 @@ namespace MyAppAPI.Migrations
                             ModifiedBy = "System",
                             NormalizedEmail = "ADMIN@EXAMPLE.COM",
                             NormalizedUserName = "ADMIN@EXAMPLE.COM",
-                            PasswordHash = "AQAAAAIAAYagAAAAEFKc12uxVCVrSZA5ZXXLkxgsgZ+3CJ67cVMzkfYpAfhhl80iiFynLSmJlwYzzMvTtg==",
+                            PasswordHash = "AQAAAAIAAYagAAAAECHy5KA7XqcAKwFZl1g/WCzpI+hMEuSIhzEADEMIMxvMKHChwixjrx4oCT+7GTCbnw==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "3f093846-bead-4549-93e3-346c1e76f516",
+                            SecurityStamp = "486ed5f2-3fec-433d-882e-85641b17a744",
                             TwoFactorEnabled = false,
                             UserName = "admin@example.com"
                         });
@@ -1101,9 +1104,6 @@ namespace MyAppAPI.Migrations
                     b.Property<DateTime?>("DeletedDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<decimal>("DiscountValue")
-                        .HasColumnType("decimal(18,2)");
-
                     b.Property<DateTime>("EndDate")
                         .HasColumnType("datetime2");
 
@@ -1111,9 +1111,6 @@ namespace MyAppAPI.Migrations
                         .HasColumnType("bit");
 
                     b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("IsGlobal")
                         .HasColumnType("bit");
 
                     b.Property<string>("ModifiedBy")

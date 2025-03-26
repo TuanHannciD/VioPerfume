@@ -1,22 +1,36 @@
-﻿using System;
+﻿using MyAppAPI.Ultis;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
+using WebOnline.Models.EF;
 
 namespace WebOnline.Models
 {
     [Table("tb_Voucher")]
-    public class Voucher
+    public class Voucher : CMAbstract
     {
+        public enum DiscountType
+        {
+            Percentage,  // Giảm theo phần trăm (%)
+            FixedAmount  // Giảm theo số tiền cố định
+        }
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
         [Required]
         public string Code { get; set; }
+        [Required]
+        [JsonConverter(typeof(EnumToStringConverter<DiscountType>))]
+        public DiscountType Type { get; set; } // Kiểu giảm giá
+        [Required]
         public decimal DiscountValue { get; set; }
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
         public bool IsActive { get; set; }
+        public bool IsGlobal { get; set; }
+        public int Quantity { get; set; }
 
         // Danh sách người dùng sử dụng voucher
         public ICollection<UserVoucher> UserVouchers { get; set; } = new List<UserVoucher>();

@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using WebOnline.Models;
 
@@ -11,9 +12,11 @@ using WebOnline.Models;
 namespace MyAppAPI.Migrations
 {
     [DbContext(typeof(VioPerfumeDBContext))]
-    partial class VioPerfumeDBContextModelSnapshot : ModelSnapshot
+    [Migration("20250318103006_UpdateVoucher")]
+    partial class UpdateVoucher
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -321,8 +324,8 @@ namespace MyAppAPI.Migrations
                             Id = "admin-id",
                             AccessFailedCount = 0,
                             Address = "VietNam",
-                            ConcurrencyStamp = "2d89b063-8f25-43b4-9344-51c11704fd20",
-                            CreatDate = new DateTime(2025, 3, 22, 11, 42, 23, 983, DateTimeKind.Utc).AddTicks(4303),
+                            ConcurrencyStamp = "28b837f4-bde1-44c9-8311-4f3ad005b183",
+                            CreatDate = new DateTime(2025, 3, 18, 10, 30, 5, 457, DateTimeKind.Utc).AddTicks(8391),
                             Email = "admin@example.com",
                             EmailConfirmed = true,
                             FullName = "Administrator",
@@ -331,9 +334,9 @@ namespace MyAppAPI.Migrations
                             ModifiedBy = "System",
                             NormalizedEmail = "ADMIN@EXAMPLE.COM",
                             NormalizedUserName = "ADMIN@EXAMPLE.COM",
-                            PasswordHash = "AQAAAAIAAYagAAAAEFKc12uxVCVrSZA5ZXXLkxgsgZ+3CJ67cVMzkfYpAfhhl80iiFynLSmJlwYzzMvTtg==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEBYu8kkssfqxCjORDwdj8T5j7uRrUCEGBf+QgEFK6vgm+FMkegoOiCBTwC2T7okEWg==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "3f093846-bead-4549-93e3-346c1e76f516",
+                            SecurityStamp = "033c67f7-83c5-456c-b7ac-85ebf3d7da4b",
                             TwoFactorEnabled = false,
                             UserName = "admin@example.com"
                         });
@@ -1113,9 +1116,6 @@ namespace MyAppAPI.Migrations
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
 
-                    b.Property<bool>("IsGlobal")
-                        .HasColumnType("bit");
-
                     b.Property<string>("ModifiedBy")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -1128,9 +1128,6 @@ namespace MyAppAPI.Migrations
 
                     b.Property<DateTime>("StartDate")
                         .HasColumnType("datetime2");
-
-                    b.Property<int>("Type")
-                        .HasColumnType("int");
 
                     b.HasKey("Id");
 

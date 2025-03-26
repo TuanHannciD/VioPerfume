@@ -7,6 +7,8 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using System.Text;
 using System.Security.Claims;
 using Microsoft.IdentityModel.Tokens;
+using MyAppAPI.Interface;
+using MyAppAPI.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -95,6 +97,8 @@ builder.Services.AddSession(options =>
     options.Cookie.HttpOnly = true;  // Đảm bảo cookie là HttpOnly
     options.Cookie.IsEssential = true;  // Cookie quan trọng cho ứng dụng
 });
+
+builder.Services.AddScoped<IVoucherService , VoucherService>();
 
 // Cấu hình Authorization
 builder.Services.AddAuthorization();

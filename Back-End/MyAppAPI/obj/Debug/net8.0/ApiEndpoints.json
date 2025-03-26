@@ -431,6 +431,48 @@
     "ReturnTypes": []
   },
   {
+    "ContainingType": "MyAppAPI.Controllers.VouchersController",
+    "Method": "CreateVoucher",
+    "RelativePath": "api/Vouchers/create",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "addVoucherRequest",
+        "Type": "MyAppAPI.DTO.VoucherRequestDto\u002BAddVoucherRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "MyAppAPI.Controllers.VouchersController",
+    "Method": "GellAllVoucher",
+    "RelativePath": "api/Vouchers/getall",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "MyAppAPI.Controllers.VouchersController",
+    "Method": "GetVoucherByIDAsync",
+    "RelativePath": "api/Vouchers/getby/{id}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
     "ContainingType": "AuthController",
     "Method": "Login",
     "RelativePath": "login",

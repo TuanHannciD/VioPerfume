@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using WebOnline.Models;
 
@@ -11,9 +12,11 @@ using WebOnline.Models;
 namespace MyAppAPI.Migrations
 {
     [DbContext(typeof(VioPerfumeDBContext))]
-    partial class VioPerfumeDBContextModelSnapshot : ModelSnapshot
+    [Migration("20250318102742_AddQuantityVoucher")]
+    partial class AddQuantityVoucher
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -321,8 +324,8 @@ namespace MyAppAPI.Migrations
                             Id = "admin-id",
                             AccessFailedCount = 0,
                             Address = "VietNam",
-                            ConcurrencyStamp = "2d89b063-8f25-43b4-9344-51c11704fd20",
-                            CreatDate = new DateTime(2025, 3, 22, 11, 42, 23, 983, DateTimeKind.Utc).AddTicks(4303),
+                            ConcurrencyStamp = "23083492-a284-4331-895c-400bba934fa4",
+                            CreatDate = new DateTime(2025, 3, 18, 10, 27, 40, 343, DateTimeKind.Utc).AddTicks(1809),
                             Email = "admin@example.com",
                             EmailConfirmed = true,
                             FullName = "Administrator",
@@ -331,9 +334,9 @@ namespace MyAppAPI.Migrations
                             ModifiedBy = "System",
                             NormalizedEmail = "ADMIN@EXAMPLE.COM",
                             NormalizedUserName = "ADMIN@EXAMPLE.COM",
-                            PasswordHash = "AQAAAAIAAYagAAAAEFKc12uxVCVrSZA5ZXXLkxgsgZ+3CJ67cVMzkfYpAfhhl80iiFynLSmJlwYzzMvTtg==",
+                            PasswordHash = "AQAAAAIAAYagAAAAENIZj/n4H/0zBWmLlA6MDc5ky91OMUb0mP8beWmZcqeBE5OequCHiYEZUe6DfGbfig==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "3f093846-bead-4549-93e3-346c1e76f516",
+                            SecurityStamp = "2f4fe12d-d345-4526-baf6-ecde2735a7fe",
                             TwoFactorEnabled = false,
                             UserName = "admin@example.com"
                         });
@@ -1091,16 +1094,6 @@ namespace MyAppAPI.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("CreatBy")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("CreatDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime?>("DeletedDate")
-                        .HasColumnType("datetime2");
-
                     b.Property<decimal>("DiscountValue")
                         .HasColumnType("decimal(18,2)");
 
@@ -1110,27 +1103,11 @@ namespace MyAppAPI.Migrations
                     b.Property<bool>("IsActive")
                         .HasColumnType("bit");
 
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("IsGlobal")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("ModifiedBy")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime?>("ModifiedDate")
-                        .HasColumnType("datetime2");
-
                     b.Property<int>("Quantity")
                         .HasColumnType("int");
 
                     b.Property<DateTime>("StartDate")
                         .HasColumnType("datetime2");
-
-                    b.Property<int>("Type")
-                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
