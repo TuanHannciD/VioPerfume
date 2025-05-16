@@ -1,4 +1,5 @@
-﻿using WebOnline.Models;
+﻿using MyAppAPI.Services;
+using WebOnline.Models;
 using static MyAppAPI.DTO.VoucherRequestDto;
 
 namespace MyAppAPI.Interface
@@ -8,7 +9,7 @@ namespace MyAppAPI.Interface
         Task<bool> CreateVoucherAsync(AddVoucherRequest addVoucher);
         Task<IEnumerable<GetAllVoucher>> GetAllVouchersAsync();
         Task<GetByID> GetVoucherByIdAsync(int id);
-        Task<bool> UpdateVoucherAsync(Voucher voucher);
+        Task<ServiceResponse> UpdateVoucherAsync(int voucherID, UpdateVoucherDto update);
         Task<bool> DeleteVoucherAsync(int id);
     }
 

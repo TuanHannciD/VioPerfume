@@ -44,6 +44,17 @@ namespace MyAppAPI.Controllers
                 return BadRequest(new { message = "Failed to create voucher. Code might be duplicated." });
             }
         }
+
+        [HttpPut("update/{id}")]
+        public async Task<IActionResult> UpdateVoucher(int id, [FromBody] UpdateVoucherDto dto)
+        {
+            var result = await _voucherService.UpdateVoucherAsync(id, dto);
+            if (!result.Success)
+                return BadRequest(result.Message);
+
+            return Ok(result.Message);
+        }
+
     }
-    
+
 }

@@ -15,6 +15,7 @@ namespace MyAppAPI.Services
         {
             _dbContext = dbContext;
         }
+
         public async Task<bool> CreateVoucherAsync(AddVoucherRequest addVoucherRequest)
         {
             try
@@ -110,9 +111,73 @@ namespace MyAppAPI.Services
             };
         }
 
-        public Task<bool> UpdateVoucherAsync(Voucher voucher)
+        public async Task<ServiceResponse> UpdateVoucherAsync(int voucherId, UpdateVoucherDto update)
         {
-            throw new NotImplementedException();
+            var voucher = await _dbContext.voucher
+                .Include(v => v.ProductVouchers)
+                .FirstOrDefaultAsync(v => v.Id == voucherId);
+
+            if (voucher == null)
+            {
+                return new ServiceResponse(false, "Không tìm thấy voucher.");
+            }
+
+            try
+            {
+                // Cập nhật các trường cơ bản
+                voucher.Code = update.Code;
+
+                // Chuyển string sang enum DiscountType
+                if (!Enum.TryParse<DiscountType>(update.Type, out var parsedType))
+                {
+                    return new ServiceResponse(false, "Loại giảm giá không hợp lệ.");
+                }
+                voucher.Type = parsedType;
+
+                voucher.DiscountValue = update.DiscountValue;
+                voucher.StartDate = update.StartDate;
+                voucher.EndDate = update.EndDate;
+                voucher.IsActive = update.IsActive;
+                voucher.IsGlobal = update.IsGlobal;
+                voucher.IsDeleted = update.IsDelete;
+                voucher.Quantity = update.Quantity;
+
+                // Nếu không áp dụng cho toàn bộ sản phẩm => cập nhật danh sách sản phẩm
+                if (!update.IsGlobal)
+                {
+                    // Xóa các sản phẩm cũ
+                    _dbContext.productVoucher.RemoveRange(voucher.ProductVouchers);
+
+                    // Thêm danh sách sản phẩm mới nếu có
+                    if (update.ProductId != null )
+                    {
+                        foreach (var item in update.ProductId)
+                        {
+                            voucher.ProductVouchers.Add(new ProductVoucher
+                            {
+                                ProductId = item,
+                                VoucherId = voucher.Id
+                            });
+                        }
+                    }
+                }
+                else
+                {
+                    // Nếu là toàn cục thì đảm bảo không còn sản phẩm cũ
+                    _dbContext.productVoucher.RemoveRange(voucher.ProductVouchers);
+                }
+
+                // Lưu thay đổi
+                await _dbContext.SaveChangesAsync();
+                return new ServiceResponse(true, "Cập nhật voucher thành công.");
+            } catch (Exception ex)
+            {
+                return new ServiceResponse(false, $"Lỗi khi cập nhật voucher: {ex.Message}");
+            }
         }
+
+
+
     }
 }
+  

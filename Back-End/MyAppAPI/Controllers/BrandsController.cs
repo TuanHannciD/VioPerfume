@@ -37,6 +37,7 @@ namespace MyAppAPI.Controllers
 
 
         // Lấy một nhánh theo ID (chỉ những nhánh chưa bị xóa)
+        
         [HttpGet("GetBranchById/{id}")]
         public async Task<IActionResult> GetBranchById(int id)
         {
