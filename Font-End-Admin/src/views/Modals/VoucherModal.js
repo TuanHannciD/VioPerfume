@@ -1,13 +1,13 @@
 import { useEffect, useState } from "react";
 import Select from 'react-select';
-import { Modal, ModalBody, ModalHeader, Form, Row, Col, FormGroup, Label, Input, ModalFooter, Button, InputGroupText, InputGroup, FormFeedback } from "reactstrap";
+import { Modal, ModalBody, ModalHeader, Form, Row, Col, FormGroup, Label, Input, ModalFooter, Button, InputGroupText, InputGroup, FormFeedback, Alert ,} from "reactstrap";
 import { customStyles } from '../../styles/selectStyles';
 import ReactSwitch from "react-switch";
 import { getAllProducts } from "api/apiProducts";
 import { addVoucherFormData } from "constants/voucherFormData";
-import { postAddVoucher } from "api/apiVouchers";
+import { postAddVoucher ,updateVoucherByID,getVoucherByID} from "api/apiVouchers";
 import { validationAddVoucherForm } from "validations/voucherValidation";
-import { getVoucherByID } from "api/apiVouchers";
+import { detailVoucherByID,updateFMVoucherByID } from "constants/voucherFormData";
 
 export const AddVoucher = ({ isOpen, toggle, close }) => {
   const [formData, setFormData] = useState(addVoucherFormData);
@@ -84,21 +84,19 @@ export const AddVoucher = ({ isOpen, toggle, close }) => {
     }
   };
 
-
-
   return (
     <Modal isOpen={isOpen} toggle={toggle} size="lg" className="modal-primary">
-      <ModalHeader toggle={toggle} close={close} tag="h1">
+      <ModalHeader toggle={toggle} close={close} tag={"h1"} >
         Thêm Voucher
-        <h5 className="text-danger">
+      </ModalHeader>
+      <ModalBody>
+      <h5 className="text-danger">
           *Mã là bắt buộc <br />
           Nếu bỏ trống, mặc định:<br />
           - Giá trị giảm là 1<br />
           - Số lượng là 1<br />
           - Ngày bắt đầu và kết thúc là ngày hôm nay<br />
         </h5>
-      </ModalHeader>
-      <ModalBody>
         <Form>
           <Row>
             <Col md={6}>
@@ -258,9 +256,11 @@ export const AddVoucher = ({ isOpen, toggle, close }) => {
 
 export const DetailVoucherByID = ({ isOpen, toggle, close, voucherID }) => {
   const [isEditing, setIsEditing] = useState(false);
-  const [formData, setFormData] = useState({});
   const [products, setProducts] = useState([]);
-  const [editData, setEditData] = useState({}); // Dữ liệu tạm khi chỉnh sửa
+  const [formData, setFormData] = useState(detailVoucherByID); // Dữ liệu gốc từ API
+  const [editData, setEditData] = useState(updateFMVoucherByID); // Dữ liệu hiển thị & chỉnh sửa
+  const [sendData, setSendData] = useState(updateFMVoucherByID); // Dữ liệu thực sự gửi đi
+
 
   const fields = [
     {label:"Mã Voucher",key:"code"},
@@ -275,7 +275,7 @@ export const DetailVoucherByID = ({ isOpen, toggle, close, voucherID }) => {
   ];
   const inputStyle = {
     border: isEditing ? "1px solid #ced4da" : "none",
-    background: "transparent",
+    background: "transparent  ",
     padding: "10px",
     outline: "none",
     color: "#ced4da"
@@ -288,11 +288,9 @@ export const DetailVoucherByID = ({ isOpen, toggle, close, voucherID }) => {
         const data = await getVoucherByID(voucherID);
         setFormData(data);
         setEditData(data);
+        const productList = await getAllProducts();
+        setProducts(productList);
 
-        if (!data.isGlobal) {
-          const productList = await getAllProducts();
-          setProducts(productList);
-        }
       } catch (error) {
         console.error("Lỗi khi lấy Voucher:", error);
       }
@@ -312,6 +310,25 @@ export const DetailVoucherByID = ({ isOpen, toggle, close, voucherID }) => {
     setEditData(formData); // Quay lại dữ liệu gốc
     setIsEditing(false);
   };
+
+  const handleUpdate = async () => {
+    try {
+      const payload = {
+        ...editData,
+        productMessage: undefined, // Không gửi tên sản phẩm
+        productId: editData.productMessage?.map(p => p.productId) || []
+      };
+      setSendData(payload); // Nếu muốn hiển thị/log
+      console.log("Dữ liệu gửi đi:", payload);
+      await updateVoucherByID(voucherID, payload);
+      setFormData(editData);
+      setIsEditing(false);
+      Alert("Cập nhật voucher thành công");
+    } catch (error) {
+      Alert("Lỗi khi cập nhật voucher");
+    }
+  };
+  
 
   const groupedFields = [];
   for (let i = 0; i < fields.length; i+=2) {
@@ -354,12 +371,14 @@ export const DetailVoucherByID = ({ isOpen, toggle, close, voucherID }) => {
                       onChange={(selectedOption) => setEditData({ ...editData, type: selectedOption.value })}
                     />
                   ) : (
-                    <Input value={editData.type === "Percentage" ? "Phần trăm (%)" : "Số tiền cố định (VNĐ)"} style={inputStyle} />
+                    <Input value={editData.type === "Percentage" ? "Phần trăm (%)" : "Số tiền cố định (VNĐ)"} style={inputStyle} readOnly/>
                   )
                 ) : field.isSwitch ? (
+                  
                   /* Nếu là Switch bật tắt */
                   <ReactSwitch
-                    checked={editData.isActive}
+                  
+                    checked={editData.isActive ?? false}
                     disabled={!isEditing}
                     onChange={(checked) => setEditData({ ...editData, isActive: checked })}
                     onColor="#00C851"
@@ -383,7 +402,7 @@ export const DetailVoucherByID = ({ isOpen, toggle, close, voucherID }) => {
                 ) : field.key === "isGlobal" ? (
                   /* Nếu là switch IsGlobal */
                   <ReactSwitch
-                    checked={editData.isGlobal}
+                    checked={editData.isGlobal ?? false}
                     disabled={!isEditing}
                     onChange={(checked) => setEditData({ ...editData, isGlobal: checked })}
                     onColor="#00C851"
@@ -395,46 +414,61 @@ export const DetailVoucherByID = ({ isOpen, toggle, close, voucherID }) => {
                     width={40}
                   />
                 ) : field.key === "productMessage" ? (
-                  /* Nếu là productMessage */
-                  !isEditing ? (
+                  isEditing ? (
+                    <Select
+                      isMulti
+                      options={products.map((p) => ({ value: p.id, label: p.nameProducts }))}
+                      // Nếu isGlobal = true thì không chọn gì cả (rỗng)
+                      value={
+                        editData.isGlobal
+                          ? []
+                          : editData.productMessage?.map((vp) => ({
+                              value: vp.productId,
+                              label: vp.productName,
+                            })) || []
+                      }
+                      onChange={(selected) => {
+                        setEditData({
+                          ...editData,
+                          productId: selected.map((s) => s.value),
+                          productMessage: selected.map((s) => ({
+                            productId: s.value,
+                            productName: s.label,
+                          })),
+                        });
+                      }}
+                      // isDisabled={editData.isGlobal}  có thể disable select nếu đang chọn "áp dụng tất cả"
+                    />
+                  ) : (
                     <Input
                       value={
                         editData.isGlobal
                           ? "Áp dụng với tất cả sản phẩm"
-                          : editData.productMessage?.map((vp) => `${vp.productName}`).join(", ") || "" 
+                          : editData.productMessage?.map((vp) => `${vp.productName}`).join(", ") ||
+                            "Không có sản phẩm nào được chọn"
                       }
                       disabled
                       style={inputStyle}
                     />
-                  ) : (
-                    <Select
-                      isMulti
-                      // Chuyển danh sách products thành mảng { value: id, label: nameProducts }
-                      options={products.map((p) => ({ value: p.id, label: p.nameProducts }))}
-
-                      // Gán giá trị đã chọn, chuyển từ editData.productMessage sang dạng { value, label }
-                      value={editData.productMessage?.map((vp) => ({
-                        value: vp.productId, // ID sản phẩm
-                        label: vp.productName, // Tên sản phẩm
-                      })) || []} // Nếu không có giá trị nào, trả về mảng rỗng []
-
-                      // Khi người dùng chọn hoặc bỏ chọn sản phẩm
-                      onChange={(selected) => {
-                        setEditData({
-                          ...editData, // Giữ nguyên các dữ liệu khác của editData
-                          productMessage: selected.map((s) => ({
-                            productId: s.value, // Gán lại ID sản phẩm
-                            productName: s.label, // Gán lại tên sản phẩm
-                          })),
-                        });
-                      }}
-                    />
                   )
+                ) : field.key === "discountValue" ? (
+                  <InputGroup>
+                    <Input
+                      name={field.key}
+                      value={editData[field.key] || ""}
+                      onChange={handleChange}
+                      disabled={!isEditing}
+                      style={inputStyle}
+                    />
+                    {editData[field.key] !== undefined && editData[field.key] !== null && (
+                      <InputGroupText>{editData.type === "Percentage" ? "%" : "VNĐ" }</InputGroupText>  
+                    )}
+                  </InputGroup>
                 ) : (
                   /* Input thông thường */
                   <Input
                     name={field.key}
-                    value={editData[field.key] || ""}
+                    value={editData[field.key] ?? ""}
                     onChange={handleChange}
                     disabled={!isEditing}
                     style={inputStyle}
@@ -448,7 +482,7 @@ export const DetailVoucherByID = ({ isOpen, toggle, close, voucherID }) => {
   
       <ModalFooter className="d-flex justify-content-between w-100">
         {isEditing && (
-          <Button color="success" onClick={() => setIsEditing(false)}>
+          <Button color="success" onClick={handleUpdate}>
             Lưu
           </Button>
         )}

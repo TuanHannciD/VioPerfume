@@ -196,7 +196,7 @@ function Dashboard(props) {
           </Col>
         </Row>
         <Row>
-          <Col lg="6" md="12">
+          {/* <Col lg="6" md="12">
             <Card className="card-tasks">
               <CardHeader>
                 <h6 className="title d-inline">Tasks(5)</h6>
@@ -462,8 +462,8 @@ function Dashboard(props) {
                 </div>
               </CardBody>
             </Card>
-          </Col>
-          <Col lg="6" md="12">
+          </Col> */}
+          {/* <Col lg="6" md="12">
             <Card>
               <CardHeader>
                 <CardTitle tag="h4">Simple Table</CardTitle>
@@ -525,7 +525,7 @@ function Dashboard(props) {
                 </Table>
               </CardBody>
             </Card>
-          </Col>
+          </Col> */}
         </Row>
       </div>
     </>

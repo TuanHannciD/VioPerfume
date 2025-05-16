@@ -29,3 +29,13 @@ export const getVoucherByID = async (id) => {
         throw error;
     }
 }
+
+export const updateVoucherByID = async(id,data) => {
+    try {
+        const response = await api.put(`/api/Vouchers/update/${id}`,data);
+        return response.data;
+    } catch (error) {
+        console.error("Lỗi khi update Voucher:",error);
+        throw error;
+    }
+}

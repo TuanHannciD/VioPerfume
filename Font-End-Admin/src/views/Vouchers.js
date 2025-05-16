@@ -68,7 +68,7 @@ const Voucher = () => {
                                     <span >Lọc theo ngày kết thúc</span>
                                     <Input type="date" />
                                     <br />
-                                    <span>Lọc theo trạng thái</span>
+                                    <span>Lọc theo trạng thái</span><br/>
                                     <ButtonGroup vertical>
                                         <Button color="danger" size="sm">
                                             Hết hạn
@@ -133,7 +133,7 @@ const Voucher = () => {
                                                             className="btn-icon btn-simple"
                                                             color="info"
                                                             size="sm"
-                                                            onClick={() => {setDetailVoucher(voucher.id)}}                                                        >
+                                                            onClick={() => {setDetailVoucher(voucher.id)}}>
                                                             <i className="fa fa-user"></i>
                                                         </Button>
                                                     </td>

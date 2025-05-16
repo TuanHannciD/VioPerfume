@@ -158,7 +158,7 @@ const Brands = () => {
                                                 <th>Người tạo</th>
                                                 <th>Hình ảnh</th>
                                                 <th>Giá</th>
-                                                <th>Nhãn hàng</th>
+                                                <th>Thương Hiệu</th>
                                                 <th>Danh mục</th>
                                                 <th>Hành động</th>
                                             </tr>
@@ -238,7 +238,7 @@ const Brands = () => {
                 <Col lg="4">
                     <Card>
                         <CardHeader>
-                            <CardTitle tag="h2">Danh sách nhãn hàng</CardTitle>
+                            <CardTitle tag="h2">Danh sách thương hiệu</CardTitle>
                         </CardHeader>
                         <CardBody>
                             <div>
