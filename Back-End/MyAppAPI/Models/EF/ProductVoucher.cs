@@ -5,7 +5,7 @@ namespace WebOnline.Models
     public class ProductVoucher
     {
         public int Id { get; set; }
-        public int ProductId { get; set; }
+        public int IDSanPham { get; set; }
         public virtual Products Product { get; set; } // Mối quan hệ với class Product
 
         public int VoucherId { get; set; }

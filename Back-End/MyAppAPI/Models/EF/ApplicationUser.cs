@@ -9,9 +9,9 @@ namespace WebOnline.Models.EF
     [Table("tb_TaiKhoan")] 
     public class ApplicationUser : BaseUser
     {
-        public string FullName { get; set; }
+        public string HoVaTen { get; set; }
         [Required]
-        public string Address { get; set; }
+        public string DiaChi { get; set; }
         public Cart carts { get; set; }
 
         public virtual ICollection<Oders> Oders { get; set; } = new HashSet<Oders>();

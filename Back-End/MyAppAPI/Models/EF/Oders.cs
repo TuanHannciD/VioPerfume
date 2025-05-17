@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace WebOnline.Models.EF
 {
-    [Table("tb_DonHang")]
+    [Table("tb_HoaDon")]
     public class Oders : CMAbstract
     {
         [Key]
@@ -11,27 +11,29 @@ namespace WebOnline.Models.EF
         public int Id { get; set; }
 
         [Required]
-        public string Code { get; set; }
+        public string Ma { get; set; }
 
         [Required]
-        public string CustomerName { get; set; }
+        public string TenNguoiDat { get; set; }
 
         [Required]
-        public string Phone { get; set; }
+        public string SDT { get; set; }
 
         [Required]
-        public string Adress { get; set; }
+        public string DiaChi { get; set; }
 
-        public decimal TotalArmout { get; set; }
+        public decimal ThanhTien { get; set; }
 
         [Required]
-        public int Quantity { get; set; }
+        public int SoLuong { get; set; }
+        public string UserID { get; set; }
 
-        public int CartId { get; set; }
+        public int IDGioHang { get; set; }
         public virtual Cart Cart { get; set; }
         public virtual ApplicationUser User { get; set; }
 
         // Danh sách voucher áp dụng cho đơn hàng
         public virtual ICollection<OrderVoucher> OrderVouchers { get; set; } = new HashSet<OrderVoucher>();
+        public virtual ICollection<OderItem> OderItems { get; set; } = new HashSet<OderItem>();
     }
 }

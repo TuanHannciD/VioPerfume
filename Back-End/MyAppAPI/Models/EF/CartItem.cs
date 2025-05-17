@@ -2,7 +2,7 @@
 
 namespace WebOnline.Models.EF
 {
-    [Table("tb.CartItem")]
+    [Table("tb.SanPhamGioHang")]
     public class CartItem
 {
     public int Id { get; set; }
@@ -11,9 +11,9 @@ namespace WebOnline.Models.EF
     public int CartId { get; set; }
     
     [ForeignKey("Products")]
-    public int ProductId { get; set; }
-    public int Quantity { get; set; }
-    public decimal UnitPrice { get; set; }
+    public int IDSanPham { get; set; }
+    public int SoLuong { get; set; }
+    public decimal DonGia { get; set; }
 
     public virtual Cart Cart { get; set; }
     public virtual Products Products { get; set; }

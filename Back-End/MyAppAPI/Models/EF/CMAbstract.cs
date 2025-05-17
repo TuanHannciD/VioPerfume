@@ -2,12 +2,12 @@
 {
     public abstract class CMAbstract
     {
-        public string CreatBy { get; set; }
-        public DateTime CreatDate { get; set; } = DateTime.UtcNow;
-        public string ModifiedBy { get; set; }
-        public DateTime? ModifiedDate { get; set; }
-        public bool IsDeleted { get; set; } = false; // Đánh dấu bản ghi đã bị xóa
-        public DateTime? DeletedDate { get; set; } // Ngày xóa
+        public string NguoiThem { get; set; }
+        public DateTime NgayThem { get; set; } = DateTime.UtcNow;
+        public string NguoiSua { get; set; }
+        public DateTime? NgaySua { get; set; }
+        public bool XoaKhong { get; set; } = false; // Đánh dấu bản ghi đã bị xóa
+        public DateTime? NgayXoa { get; set; } // Ngày xóa
     }
 
 }

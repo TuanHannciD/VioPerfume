@@ -2,14 +2,14 @@
 
 namespace WebOnline.Models.EF
 {
-    [Table("tb.OderItem")]
+    [Table("tb.HoaDonSanPham")]
     public class OderItem
     {
         public int Id { get; set; }
-        public int OderId { get; set; }
-        public int ProductId { get; set; }
-        public int Quantity { get; set; }
-        public decimal UnitPrice { get; set; }
+        public int IDHoaDon { get; set; }
+        public int IDSanPham { get; set; }
+        public int SoLuong { get; set; }
+        public decimal DonGia { get; set; }
 
         public virtual Oders Oders { get; set; }
         public virtual Products Products { get; set; }

@@ -20,17 +20,17 @@ namespace WebOnline.Models
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
         [Required]
-        public string Code { get; set; }
+        public string Ma { get; set; }
         [Required]
         [JsonConverter(typeof(EnumToStringConverter<DiscountType>))]
-        public DiscountType Type { get; set; } // Kiểu giảm giá
+        public DiscountType KieuGiamGia { get; set; } // Kiểu giảm giá
         [Required]
-        public decimal DiscountValue { get; set; }
-        public DateTime StartDate { get; set; }
-        public DateTime EndDate { get; set; }
-        public bool IsActive { get; set; }
-        public bool IsGlobal { get; set; }
-        public int Quantity { get; set; }
+        public decimal GiaTriGiam { get; set; }
+        public DateTime NgayBatDau { get; set; }
+        public DateTime NgayKetThuc { get; set; }
+        public bool HoatDong { get; set; }
+        public bool ApDungTatCaSanPham { get; set; }
+        public int Soluong { get; set; }
 
         // Danh sách người dùng sử dụng voucher
         public ICollection<UserVoucher> UserVouchers { get; set; } = new List<UserVoucher>();
@@ -43,7 +43,7 @@ namespace WebOnline.Models
 
         public bool IsValid()
         {
-            return IsActive && DateTime.Now >= StartDate && DateTime.Now <= EndDate;
+            return HoatDong && DateTime.Now >= NgayBatDau && DateTime.Now <= NgayKetThuc;
         }
     }
 } 

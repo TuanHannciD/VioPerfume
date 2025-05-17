@@ -9,8 +9,8 @@ namespace WebOnline.Models.EF
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
-        public int ProductId { get; set; }
-        public string Image { get; set; }
-        public bool IsDefault { get; set; }
+        public int IDSanPham { get; set; }
+        public string Anh { get; set; }
+        public bool MacDinhKhong { get; set; }
     }
 }

@@ -4,10 +4,10 @@ namespace MyAppAPI.Models.EF
 {
     public abstract class BaseUser : IdentityUser
     {
-        public DateTime CreatDate { get; set; } = DateTime.UtcNow;
-        public string ModifiedBy { get; set; }
-        public DateTime? ModifiedDate { get; set; }
-        public bool IsDeleted { get; set; } = false;
-        public DateTime? DeletedDate { get; set; }
+        public DateTime NgayThem { get; set; } = DateTime.UtcNow;
+        public string NguoiSua { get; set; }
+        public DateTime? NgaySua { get; set; }
+        public bool XoaKhong { get; set; } = false;
+        public DateTime? NgayXoa { get; set; }
     }
 }

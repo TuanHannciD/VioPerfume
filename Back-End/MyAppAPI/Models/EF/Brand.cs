@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace WebOnline.Models.EF
 {
-    [Table("tb.ThuongHieu")]
+    [Table("tb.NhaSanXuat")]
     public class Brand : CMAbstract
     {
         public Brand() 
@@ -12,11 +12,11 @@ namespace WebOnline.Models.EF
         }
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public int Id { get; set; }
+        public int IDNSX { get; set; }
         [Required]
-        public string NameBrand { get; set; }
-        public string Title { get; set; }
-        public string Description { get; set; }
+        public string TenNSX { get; set; }
+        public string TieuDe { get; set; }
+        public string MoTa { get; set; }
         
         public ICollection<Products> Products { get; set; }
     }
