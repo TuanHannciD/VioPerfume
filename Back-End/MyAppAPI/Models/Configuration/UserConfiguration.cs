@@ -21,12 +21,12 @@ namespace AppData.Configurations
                 NormalizedEmail = "ADMIN@EXAMPLE.COM",
                 EmailConfirmed = true,
                 PasswordHash = hasher.HashPassword(null, "Ckok1123@"),
-                CreatDate = DateTime.UtcNow, // ✅ Đảm bảo hợp lệ
-                ModifiedBy = "System",  // ✅ Tránh lỗi NULL
-                ModifiedDate = null,
-                IsDeleted = false,
-                FullName = "Administrator",
-                Address = "VietNam"
+                NgayThem = DateTime.UtcNow, // ✅ Đảm bảo hợp lệ
+                NguoiSua = "System",  // ✅ Tránh lỗi NULL
+                NgaySua = null,
+                XoaKhong = false,
+                HoVaTen = "Administrator",
+                DiaChi = "VietNam"
             };
 
             builder.HasData(adminUser);
